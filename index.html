@@ -29,10 +29,11 @@ button,input,select,textarea{font:inherit;color:inherit}
 :focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:4px}
 
 /* Header + nav */
-.program{background:#0F1B24;color:#C9D4DC;font-size:.85rem;padding:.4rem 1.25rem;line-height:1.3}
-.top{background:var(--ink);color:#fff;padding:.9rem 1.25rem;display:flex;flex-wrap:wrap;gap:.75rem 1.5rem;align-items:center;justify-content:space-between}
-.brand h1{margin:0;font-size:1.35rem;color:#fff}
-.brand p{margin:.1rem 0 0;font-size:.88rem;color:#B9C6D0;max-width:none}
+.top{background:var(--ink);color:#fff;padding:1rem 1.25rem;display:flex;flex-wrap:wrap;gap:.75rem 1.5rem;align-items:center;justify-content:space-between}
+.brand{flex:1 1 560px}
+.brand h1{margin:0;font-size:1.65rem;line-height:1.2;color:#fff}
+.brand p{margin:.25rem 0 0;font-size:1rem;color:#C3D0DA;max-width:none}
+@media (max-width:600px){.brand h1{font-size:1.25rem}.brand p{font-size:.92rem}}
 .data-actions{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
 .data-actions .note{font-size:.8rem;color:#B9C6D0;margin-right:.25rem}
 .btn{display:inline-block;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:.45rem .8rem;cursor:pointer;font-size:.92rem;font-weight:550;text-decoration:none;line-height:1.3}
@@ -192,9 +193,9 @@ th.h-legit{border-bottom:4px solid var(--legit)!important} th.h-cap{border-botto
 .pick.phase input:checked+span{background:var(--slate);border-color:var(--slate)}
 .pick input:focus-visible+span{outline:3px solid var(--focus);outline-offset:2px}
 table.int th.sel{background:var(--ink);color:#fff}
+table.int tr.grp td{background:#fff;font-family:var(--serif);font-size:1.05rem;font-weight:600;color:var(--ink);border-top:2px solid var(--slate)}
 table.int td.x{text-align:center;font-weight:700}
 table.int td.x.selc{background:var(--amber-tint)}
-table.int tr.best td:first-child{box-shadow:inset 4px 0 0 var(--amber)}
 .plan{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:.9rem}
 .plan textarea{width:100%;min-height:6rem;border:1px solid #B8C4CD;border-radius:6px;padding:.5rem}
 .sugg{background:var(--amber-tint);border-radius:8px;padding:.75rem 1rem;margin-bottom:1rem;max-width:80ch}
@@ -218,7 +219,7 @@ table.int tr.best td:first-child{box-shadow:inset 4px 0 0 var(--amber)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 @media print{
   body{background:#fff;font-size:11pt}
-  .program,.top,.steps,.res-nav,.tools,.no-print,.foot,.toast,.btn,.scorebar .btn{display:none!important}
+  .top,.steps,.res-nav,.tools,.no-print,.foot,.toast,.btn,.scorebar .btn{display:none!important}
   .view{display:none!important} .view.active{display:block!important}
   main{padding:0;max-width:none}
   .printhead{display:block;border-bottom:2px solid #000;margin-bottom:1rem;padding-bottom:.4rem}
@@ -231,10 +232,10 @@ table.int tr.best td:first-child{box-shadow:inset 4px 0 0 var(--amber)}
 </style>
 </head>
 <body>
-<div class="program">Building Stronger Essential Care Systems for Critically Ill Children</div>
 <header class="top">
   <div class="brand">
-    <h1>Assessment, Action and Learning Tool</h1>
+    <h1>Building Stronger Essential Care Systems for Critically Ill Children</h1>
+    <p>Assessment, Action and Learning Tool</p>
   </div>
   <div class="data-actions">
     <span class="note">Data stays in this browser</span>
@@ -268,12 +269,12 @@ table.int tr.best td:first-child{box-shadow:inset 4px 0 0 var(--amber)}
   <div class="panel">
     <h3>How to use it</h3>
     <ol class="flow">
-      <li><strong>Resources.</strong> Assess equipment, supplies, space, and workforce at your hospital – overall and for each ward or unit caring for sick children.</li>
-      <li><strong>Environment.</strong> Assess whether your hospital's work environment supports staff to care for sick children effectively.</li>
-      <li><strong>Dashboard.</strong> Review the results.</li>
-      <li><strong>Interpret.</strong> Use the results to identify practical priorities for local action.</li>
-      <li><strong>Interventions.</strong> Identify and prioritise solutions. Act.</li>
-      <li><strong>Learn from the experience.</strong> Reassess every 3-6 months.</li>
+      <li><strong>Assess resources.</strong> Assess equipment, supplies, space, and workforce at your hospital – overall and for each ward or unit caring for sick children.</li>
+      <li><strong>Assess environment.</strong> Assess whether your hospital's work environment supports staff to care for sick children effectively.</li>
+      <li><strong>Review results.</strong></li>
+      <li><strong>Interpret results.</strong> Use the results to identify practical priorities for local action.</li>
+      <li><strong>Take action.</strong> Identify solutions and act.</li>
+      <li><strong>Reassess, learn and continue to improve.</strong> Reassess every 3-6 months.</li>
     </ol>
   </div>
 
@@ -662,18 +663,31 @@ function bandOf(median) { return median < 2.5 ? 'weak' : median < 4.5 ? 'partly'
 function variationOf(iqr) { return iqr >= 2 ? 'some' : iqr <= 1 ? 'low' : 'between'; }
 
 /* ---------- Interventions (Table 1 of the PECDA document) ---------- */
+const INTERVENTION_GROUPS = ['Space and flow', 'Recognition and response tools', 'Roles, responsibilities, communication', 'Learning'];
 const INTERVENTIONS = [
-  { name: 'Emergency space and patient flow', phases: ['entry', 'recognition'], feats: ['legitimacy', 'connectedness'] },
-  { name: 'Triage system and triager role', phases: ['entry', 'recognition', 'response'], feats: ['legitimacy', 'capability', 'connectedness'] },
-  { name: 'Clinical guidelines and protocols', phases: ['recognition', 'response'], feats: ['legitimacy', 'capability'] },
-  { name: 'Routine vital signs and pulse oximetry', phases: ['recognition', 'response', 'continuity'], feats: ['legitimacy', 'capability'] },
-  { name: 'Standardised admission forms', phases: ['recognition', 'response', 'continuity'], feats: ['capability', 'connectedness'] },
-  { name: 'Track-and-trigger charts', phases: ['response', 'continuity'], feats: ['legitimacy', 'capability', 'connectedness'] },
-  { name: 'In-service training and simulation', phases: ['recognition', 'response', 'continuity'], feats: ['capability', 'connectedness'] },
-  { name: 'Morbidity and mortality audits', phases: [], feats: ['legitimacy', 'connectedness'] },
-  { name: 'Inter-disciplinary clinical meetings', phases: [], feats: ['connectedness'] },
-  { name: 'Roles cutting across multiple units', phases: [], feats: ['connectedness'] },
-  { name: 'Clinical mentorship programs', phases: [], feats: ['legitimacy', 'capability', 'connectedness'] }
+  { group: 0, name: 'Dedicated emergency space and patient flow organisation for children', phases: ['entry', 'recognition'], feats: ['legitimacy', 'connectedness'] },
+  { group: 0, name: 'High acuity area for children', phases: ['recognition', 'response', 'continuity'], feats: ['legitimacy', 'capability', 'connectedness'] },
+  { group: 0, name: 'Referral pre-notification systems', phases: ['entry', 'response'], feats: ['legitimacy', 'connectedness'] },
+  { group: 0, name: 'Systems to bypass or expedite non-clinical steps', phases: ['entry', 'recognition'], feats: ['legitimacy', 'connectedness'] },
+
+  { group: 1, name: 'Triage system and triager role', phases: ['entry', 'recognition', 'response'], feats: ['legitimacy', 'capability', 'connectedness'] },
+  { group: 1, name: 'Clinical guidelines and protocols', phases: ['recognition', 'response'], feats: ['legitimacy', 'capability'] },
+  { group: 1, name: 'Routine vital signs and pulse oximetry', phases: ['recognition', 'response', 'continuity'], feats: ['legitimacy', 'capability'] },
+  { group: 1, name: 'Standardised admission forms', phases: ['recognition', 'response', 'continuity'], feats: ['capability', 'connectedness'] },
+  { group: 1, name: 'Track-and-trigger charts', phases: ['response', 'continuity'], feats: ['legitimacy', 'capability', 'connectedness'] },
+
+  { group: 2, name: 'Formalised scope of practice for nurse-initiated emergency care', phases: ['response', 'continuity'], feats: ['legitimacy'] },
+  { group: 2, name: 'Defined roles for lay/volunteer staff conducting limited clinical assessments', phases: ['entry', 'recognition'], feats: ['legitimacy', 'connectedness'] },
+  { group: 2, name: 'Parental escalation systems', phases: ['recognition', 'continuity'], feats: ['legitimacy', 'connectedness'] },
+  { group: 2, name: 'Standardised handover systems', phases: ['response', 'continuity'], feats: ['legitimacy', 'connectedness'] },
+  { group: 2, name: 'Roles cutting across multiple units', phases: [], feats: ['connectedness'] },
+  { group: 2, name: 'Inter-disciplinary clinical meetings', phases: [], feats: ['connectedness'] },
+
+  { group: 3, name: 'In-service training (including simulation)', phases: ['recognition', 'response', 'continuity'], feats: ['capability', 'connectedness'] },
+  { group: 3, name: 'Non-technical skills training', phases: ['recognition', 'response', 'continuity'], feats: ['capability', 'connectedness'] },
+  { group: 3, name: 'Clinical mentorship programs', phases: [], feats: ['legitimacy', 'capability', 'connectedness'] },
+  { group: 3, name: 'Morbidity and mortality audits', phases: [], feats: ['legitimacy', 'connectedness'] },
+  { group: 3, name: 'Paediatric critical illness awareness and education (posters, events)', phases: ['entry'], feats: ['legitimacy', 'connectedness'] }
 ];
 /* Suggested focus: lowest-median feature; earliest phase within 0.5 of the lowest-median phase */
 function suggestFocus(st) {
@@ -693,7 +707,7 @@ function suggestFocus(st) {
   return { feature, phase, tiedFeatures: tied };
 }
 
-if (typeof module !== 'undefined') module.exports = { num, FAC_UNITS, WARD_UNITS, scoreFacility, scoreWard, respondentScores, summarise, envStats, suggestFocus, INTERVENTIONS, FAC_LABELS, WARD_LABELS, VITALS, facilityReadiness, unitName };
+if (typeof module !== 'undefined') module.exports = { INTERVENTION_GROUPS, num, FAC_UNITS, WARD_UNITS, scoreFacility, scoreWard, respondentScores, summarise, envStats, suggestFocus, INTERVENTIONS, FAC_LABELS, WARD_LABELS, VITALS, facilityReadiness, unitName };
 
 /* ===================== STATE & STORAGE ===================== */
 const STORE_KEY = 'pecda-v1';
@@ -1155,12 +1169,15 @@ function renderInterventions() {
   h += `<div class="no-print"><h4>Feature to strengthen</h4>${pick('pf', 'feat', Object.entries(MECH_NAMES), feat)}
     <h4>Phase of care to strengthen</h4>${pick('pp', 'phase', Object.entries(PHASE_NAMES), phase)}
     ${state.focus.feature || state.focus.phase ? '<p><button class="btn quiet" type="button" id="reset-focus">Use the suggestion again</button></p>' : ''}</div>`;
-  const rows = INTERVENTIONS.map((iv, idx) => { const mp = phase && iv.phases.includes(phase) ? 1 : 0, mf = feat && iv.feats.includes(feat) ? 1 : 0; return { iv, idx, mp, mf, m: mp + mf }; }).sort((a, b) => b.m - a.m || a.idx - b.idx);
+  const scored = INTERVENTIONS.map((iv, idx) => { const mp = phase && iv.phases.includes(phase) ? 1 : 0, mf = feat && iv.feats.includes(feat) ? 1 : 0; return { iv, idx, m: mp + mf }; });
   const X = (on, sel) => `<td class="x ${sel ? 'selc' : ''}">${on ? '<span aria-label="yes">\u2713</span>' : '<span class="muted" aria-label="no"></span>'}</td>`;
   const ph = Object.keys(PHASES);
-  h += `<div class="table-scroll"><table class="data int"><thead><tr><th>Intervention</th><th>Fit</th>${ph.map(k => `<th class="${k === phase ? 'sel' : ''}">${esc(k === 'continuity' ? 'Continuity, escalation, referral' : PHASE_NAMES[k])}</th>`).join('')}${Object.keys(MECH).map(k => `<th class="${k === feat ? 'sel' : ''}">${MECH_NAMES[k]}</th>`).join('')}</tr></thead><tbody>
-  ${rows.map(r => `<tr class="${r.m === 2 ? 'best' : ''}"><td><strong>${esc(r.iv.name)}</strong></td><td>${r.m === 2 ? '<span class="tag weak">Fits both</span>' : r.mp ? '<span class="tag">Fits phase</span>' : r.mf ? '<span class="tag">Fits feature</span>' : ''}</td>${ph.map(k => X(r.iv.phases.includes(k), k === phase)).join('')}${Object.keys(MECH).map(k => X(r.iv.feats.includes(k), k === feat)).join('')}</tr>`).join('')}</tbody></table></div>
-  <p class="legend" style="margin-top:.6rem">Ticks show the potential functions of each intervention. Treat this as a heuristic, not a definitive map. In practice, functions depend on how the intervention is designed and implemented in your context.</p>`;
+  const body = INTERVENTION_GROUPS.map((gname, gi) => {
+    const list = scored.filter(r => r.iv.group === gi).sort((x, y) => y.m - x.m || x.idx - y.idx);
+    return `<tr class="grp"><td colspan="8">${esc(gname)}</td></tr>` + list.map(r => `<tr><td><strong>${esc(r.iv.name)}</strong></td>${ph.map(k => X(r.iv.phases.includes(k), k === phase)).join('')}${Object.keys(MECH).map(k => X(r.iv.feats.includes(k), k === feat)).join('')}</tr>`).join('');
+  }).join('');
+  h += `<div class="table-scroll"><table class="data int"><thead><tr><th>Intervention</th>${ph.map(k => `<th class="${k === phase ? 'sel' : ''}">${esc(k === 'continuity' ? 'Continuity, escalation, referral' : PHASE_NAMES[k])}</th>`).join('')}${Object.keys(MECH).map(k => `<th class="${k === feat ? 'sel' : ''}">${MECH_NAMES[k]}</th>`).join('')}</tr></thead><tbody>${body}</tbody></table></div>
+  <p class="legend" style="margin-top:.6rem">Within each group, interventions that match your chosen feature and phase are listed first. Ticks show the potential functions of each intervention. They are a guide, not a definitive map. In practice, functions depend on how the intervention is designed and implemented in your context.</p>`;
   const p = state.plan;
   h += `<div class="panel" style="margin-top:1.5rem"><h3>Action plan</h3><p class="muted">Talk through the results with staff from different roles, agree a small number of feasible actions, and repeat the environment questions in 3 to 6 months to see what has changed.</p>
     <div class="plan">${[['chosen', 'Interventions we will try'], ['lead', 'Who leads, and who else is involved'], ['change', 'What we expect to change'], ['recheck', 'When we will re-check, and how']].map(([k, l]) => `<div class="field"><label for="pl-${k}">${l}</label><textarea id="pl-${k}" data-plan="${k}">${esc(p[k] || '')}</textarea></div>`).join('')}</div></div>`;
