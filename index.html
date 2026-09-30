@@ -44,11 +44,11 @@ button,input,select,textarea{font:inherit;color:inherit}
 .btn.danger{color:#9B2C1E}
 .top .btn{background:transparent;color:#fff;border-color:#5C7284}
 .top .btn:hover{background:#2A3E4E}
-.steps{background:var(--surface);border-bottom:1px solid var(--line);display:flex;overflow-x:auto;padding:0 .75rem;position:sticky;top:0;z-index:20}
-.steps button{background:none;border:0;border-bottom:3px solid transparent;padding:.8rem .42rem;cursor:pointer;white-space:nowrap;color:var(--muted);font-weight:550;font-size:.88rem}
+.steps{background:var(--surface);border-bottom:1px solid var(--line);display:flex;overflow-x:auto;padding:0 .5rem;position:sticky;top:0;z-index:20}
+.steps button{background:none;border:0;border-bottom:3px solid transparent;padding:.75rem .3rem;cursor:pointer;white-space:nowrap;color:var(--muted);font-weight:550;font-size:.84rem}
 .steps button:hover{color:var(--ink)}
 .steps button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
-.steps .n{display:inline-block;min-width:1.35rem;height:1.35rem;line-height:1.35rem;padding:0 .25rem;box-sizing:border-box;text-align:center;border-radius:99px;background:var(--slate-tint);color:var(--slate);font-size:.78rem;margin-right:.35rem}
+.steps .n{display:inline-block;min-width:1.35rem;height:1.35rem;line-height:1.35rem;padding:0 .25rem;box-sizing:border-box;text-align:center;border-radius:99px;background:var(--slate-tint);color:var(--slate);font-size:.74rem;margin-right:.3rem}
 .steps button[aria-selected="true"] .n{background:var(--ink);color:#fff}
 
 main{max-width:1120px;margin:0 auto;padding:1.5rem 1.25rem 3rem}
@@ -181,6 +181,32 @@ table.data td .i{display:block;font-size:.72rem;color:var(--muted);white-space:n
 th.h-legit{border-bottom:4px solid var(--legit)!important} th.h-cap{border-bottom:4px solid var(--cap)!important} th.h-conn{border-bottom:4px solid var(--conn)!important}
 .ctrls{display:flex;flex-wrap:wrap;gap:1rem 1.5rem;margin-bottom:.9rem;align-items:end}
 
+/* Partner logos */
+.partners{background:#fff;border-top:1px solid var(--line);padding:1.25rem 1.25rem 1.6rem}
+.partners-inner{max-width:1120px;margin:0 auto}
+.partners-label{display:block;font-size:.8rem;color:var(--muted);margin-bottom:.8rem}
+.partners-logos{display:flex;flex-wrap:wrap;align-items:center;gap:1.25rem 3rem}
+.partner{display:flex;align-items:center;min-height:52px}
+.partner img{display:block;height:52px;width:auto;max-width:220px;object-fit:contain}
+.logo-name{font-family:var(--serif);font-weight:600;font-size:1.02rem;color:var(--slate);line-height:1.25;max-width:14rem}
+
+/* Step 6: reassess and learn */
+.cycle{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .75rem;margin:0 0 1.5rem}
+.cycle span{background:var(--ink);color:#fff;border-radius:99px;padding:.4rem 1.1rem;font-weight:600}
+.cycle i{font-style:normal;color:var(--muted);font-size:1.25rem}
+.cycle small{color:var(--muted);font-size:.95rem;margin-left:.25rem}
+.tcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1rem;margin:.75rem 0 1.5rem}
+.panel .tcards{margin-bottom:.25rem}
+.tcard{background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--slate);border-radius:8px;padding:.85rem 1rem}
+.tcard h4{margin:0 0 .3rem;font-family:var(--serif);font-size:1.08rem}
+.tcard p{margin:0;font-size:.96rem}
+.panel .tcard{background:var(--bg)}
+.ind{list-style:none;margin:.25rem 0 0;padding:0;display:grid;gap:.5rem}
+.ind li{display:flex;flex-wrap:wrap;gap:.1rem .9rem;align-items:baseline;border-bottom:1px solid var(--line-soft);padding-bottom:.5rem}
+.ind li:last-child{border-bottom:0}
+.ind strong{min-width:10.5rem}
+.ind span{color:var(--muted)}
+
 /* Interventions */
 .pick{display:flex;flex-wrap:wrap;gap:.4rem;margin:.25rem 0 1rem}
 .pick label{cursor:pointer}
@@ -215,6 +241,14 @@ table.int td.x.selc{background:var(--amber-tint)}
   .bar{grid-template-columns:1fr 3.4rem}
   .bar .track{grid-column:1/-1;grid-row:2}
   .scorebar{top:3.05rem}
+}
+
+@media (min-width:700px) and (max-width:1299px){
+  .steps{position:static;flex-wrap:wrap;overflow-x:visible}
+  .steps button{padding:.55rem .55rem}
+  .scorebar{top:.5rem}
+  .res-nav{top:.75rem}
+  html{scroll-padding-top:4.5rem}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 @media print{
@@ -254,6 +288,7 @@ table.int td.x.selc{background:var(--amber-tint)}
   <button role="tab" data-view="interp-resources"><span class="n">4a</span>Interpret resources</button>
   <button role="tab" data-view="interp-environment"><span class="n">4b</span>Interpret environment</button>
   <button role="tab" data-view="interventions"><span class="n">5</span>Interventions</button>
+  <button role="tab" data-view="reassess"><span class="n">6</span>Reassess and learn</button>
   <button role="tab" data-view="moreinfo"><span class="n">?</span>More info</button>
 </nav>
 
@@ -280,6 +315,52 @@ table.int td.x.selc{background:var(--amber-tint)}
 
   <div class="panel">
     <p style="margin:0"><strong>Your data.</strong> Everything you enter is kept only in this browser on this device, and nothing is sent anywhere. The tool works offline once the page has loaded. Use <em>Save data file</em> regularly, and before clearing your browser data, so you can reload it later or compare a re-check with your first assessment.</p>
+  </div>
+</section>
+
+<!-- REASSESS AND LEARN -->
+<section class="view" id="view-reassess">
+  <div class="viewhead">
+    <div>
+      <h2>Step 6: Reassess, learn and continue to improve</h2>
+      <p>Emergency care improves through repeated cycles of assessing, acting and learning. Reassessing shows what has changed and what to do next.</p>
+    </div>
+    <button class="btn no-print" type="button" data-print>Print or save as PDF</button>
+  </div>
+
+  <div class="cycle" aria-label="Assess, act, learn, then repeat">
+    <span>Assess</span><i aria-hidden="true">&rarr;</i><span>Act</span><i aria-hidden="true">&rarr;</i><span>Learn</span><i aria-hidden="true">&#8635;</i><small>Repeat every 3-4 months</small>
+  </div>
+
+  <h3>Set up a group</h3>
+  <div class="tcards">
+    <div class="tcard"><h4>Convene a group</h4><p>Bring together a group within the hospital responsible for paediatric emergency care.</p></div>
+    <div class="tcard"><h4>Give it a name</h4><p>Name the group, so that people know it exists and what it is for.</p></div>
+    <div class="tcard"><h4>Involve leadership</h4><p>Involve facility leadership in the group and its meetings.</p></div>
+    <div class="tcard"><h4>Meet every 3-4 months</h4><p>Redo the assessments at each meeting. Save a data file each time, so that you can compare rounds.</p></div>
+  </div>
+
+  <div class="panel">
+    <h3>Document progress</h3>
+    <p>Keep a record of each meeting and of how things are changing. Meeting minutes, together with routinely collected data, are enough.</p>
+    <h4>Examples of indicators to track</h4>
+    <ul class="ind">
+      <li><strong>Triage completed</strong><span>Are sick children being triaged?</span></li>
+      <li><strong>Time to assessment</strong><span>How long from arrival until a clinical assessment?</span></li>
+      <li><strong>Time to oxygen</strong><span>For children who need it, how long from arrival until oxygen starts?</span></li>
+      <li><strong>Mortality</strong><span>Are children dying in hospital, and is this changing?</span></li>
+    </ul>
+  </div>
+
+  <div class="panel">
+    <h3>At each meeting, discuss</h3>
+    <div class="tcards tight">
+      <div class="tcard"><h4>Challenges</h4><p>What has made it hard to improve care?</p></div>
+      <div class="tcard"><h4>What worked</h4><p>What helped, and should continue or spread?</p></div>
+      <div class="tcard"><h4>What did not work</h4><p>What did not help, and why?</p></div>
+      <div class="tcard"><h4>What next</h4><p>What will we change or try before the next meeting?</p></div>
+    </div>
+    <p class="no-print" style="margin:.75rem 0 0"><button class="btn" type="button" data-go="resources">Start the next assessment</button></p>
   </div>
 </section>
 
@@ -409,6 +490,12 @@ table.int td.x.selc{background:var(--amber-tint)}
 </section>
 </main>
 
+<footer class="partners" aria-label="Partner organisations">
+  <div class="partners-inner">
+    <span class="partners-label">Partner organisations</span>
+    <div class="partners-logos" id="partner-logos"></div>
+  </div>
+</footer>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script>
 /* ===================== CORE: definitions, scoring, statistics ===================== */
@@ -750,7 +837,7 @@ function setPath(obj, path, val) {
 }
 
 /* ===================== NAVIGATION ===================== */
-const VIEWS = ['about', 'resources', 'environment', 'dashboard', 'interp-resources', 'interp-environment', 'interventions', 'moreinfo'];
+const VIEWS = ['about', 'resources', 'environment', 'dashboard', 'interp-resources', 'interp-environment', 'interventions', 'reassess', 'moreinfo'];
 let current = 'about';
 const RENDER = {
   resources: () => renderResources(), environment: () => renderEnvironment(), dashboard: () => renderDashboard(),
@@ -1190,6 +1277,31 @@ $('#interv').addEventListener('change', e => {
 });
 $('#interv').addEventListener('click', e => { if (e.target.id === 'reset-focus') { state.focus = { feature: null, phase: null }; save(); renderInterventions(); } });
 $('#interv').addEventListener('input', e => { if (e.target.dataset.plan) { state.plan[e.target.dataset.plan] = e.target.value; save(); } });
+
+/* ===================== PARTNER LOGOS ===================== */
+/* Put official logo files in a "logos" folder next to index.html, named as below (.svg or .png).
+   Until a file is present, the organisation's name is shown as text. */
+const PARTNERS = [
+  ['university-of-ibadan', 'University of Ibadan'],
+  ['oxygen-for-life-initiative', 'Oxygen for Life Initiative'],
+  ['university-of-melbourne', 'University of Melbourne'],
+  ['murdoch-childrens-research-institute', "Murdoch Children's Research Institute"]
+];
+(function partnerLogos() {
+  const box = $('#partner-logos'); if (!box) return;
+  PARTNERS.forEach(([slug, name]) => {
+    const wrap = document.createElement('div'); wrap.className = 'partner'; box.appendChild(wrap);
+    const exts = ['svg', 'png'];
+    const tryNext = i => {
+      if (i >= exts.length) { wrap.innerHTML = `<span class="logo-name">${esc(name)}</span>`; return; }
+      const img = new Image(); img.alt = name;
+      img.onload = () => wrap.appendChild(img);
+      img.onerror = () => tryNext(i + 1);
+      img.src = 'logos/' + slug + '.' + exts[i];
+    };
+    tryNext(0);
+  });
+})();
 
 /* ===================== INIT ===================== */
 show(location.hash.slice(1) || 'about', true);
