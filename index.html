@@ -63,10 +63,15 @@ main{max-width:1120px;margin:0 auto;padding:1.5rem 1.25rem 3rem}
 .viewhead p{margin:.25rem 0 0}
 
 /* About */
-.mech-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1rem;margin:1.25rem 0}
+.mech-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin:1.25rem 0}
 .mech{border-radius:8px;padding:1rem 1.1rem;border-left:6px solid var(--slate);background:var(--surface);border-top:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
 .mech h3{margin-bottom:.3rem}
-.mech p{margin:0;font-size:.96rem}
+.mech p{margin:0 0 .7rem;font-size:.96rem}
+.mech p.sub{font-size:.9rem;color:var(--muted);margin-bottom:.5rem}
+.mech p:last-child{margin-bottom:0}
+.panel.theory p{max-width:75ch}
+.formlink{display:flex;flex-wrap:wrap;gap:.6rem 1rem;align-items:center;margin:0 0 1.25rem}
+.formlink span{color:var(--muted);font-size:.95rem;max-width:60ch}
 .mech.legit{border-left-color:var(--legit)} .mech.legit h3{color:var(--legit)}
 .mech.cap{border-left-color:var(--cap)} .mech.cap h3{color:var(--cap)}
 .mech.conn{border-left-color:var(--conn)} .mech.conn h3{color:var(--conn)}
@@ -309,7 +314,7 @@ table.int td.x.selc{background:var(--amber-tint)}
       <li><strong>Review results.</strong></li>
       <li><strong>Interpret results.</strong> Use the results to identify practical priorities for local action.</li>
       <li><strong>Take action.</strong> Identify solutions and act.</li>
-      <li><strong>Reassess, learn and continue to improve.</strong> Reassess every 3-6 months.</li>
+      <li><strong>Reassess, learn and continue to improve.</strong> Meet monthly, reassess every 3-6 months.</li>
     </ol>
   </div>
 
@@ -329,7 +334,7 @@ table.int td.x.selc{background:var(--amber-tint)}
   </div>
 
   <div class="cycle" aria-label="Assess, act, learn, then repeat">
-    <span>Assess</span><i aria-hidden="true">&rarr;</i><span>Act</span><i aria-hidden="true">&rarr;</i><span>Learn</span><i aria-hidden="true">&#8635;</i><small>Repeat every 3-4 months</small>
+    <span>Assess</span><i aria-hidden="true">&rarr;</i><span>Act</span><i aria-hidden="true">&rarr;</i><span>Learn</span><i aria-hidden="true">&#8635;</i><small>Meet monthly, reassess every 3-6 months</small>
   </div>
 
   <h3>Set up a group</h3>
@@ -337,7 +342,7 @@ table.int td.x.selc{background:var(--amber-tint)}
     <div class="tcard"><h4>Convene a group</h4><p>Bring together a group within the hospital responsible for paediatric emergency care.</p></div>
     <div class="tcard"><h4>Give it a name</h4><p>Name the group, so that people know it exists and what it is for.</p></div>
     <div class="tcard"><h4>Involve leadership</h4><p>Involve facility leadership in the group and its meetings.</p></div>
-    <div class="tcard"><h4>Meet every 3-4 months</h4><p>Redo the assessments at each meeting. Save a data file each time, so that you can compare rounds.</p></div>
+    <div class="tcard"><h4>Meet monthly</h4><p>Meet monthly to review progress and keep the action plan moving. Redo the assessments every 3-6 months.</p></div>
   </div>
 
   <div class="panel">
@@ -360,7 +365,25 @@ table.int td.x.selc{background:var(--amber-tint)}
       <div class="tcard"><h4>What did not work</h4><p>What did not help, and why?</p></div>
       <div class="tcard"><h4>What next</h4><p>What will we change or try before the next meeting?</p></div>
     </div>
-    <p class="no-print" style="margin:.75rem 0 0"><button class="btn" type="button" data-go="resources">Start the next assessment</button></p>
+  </div>
+
+  <div class="panel">
+    <h3>Keep a record of each meeting in the tool</h3>
+    <p>The action plan and everything else you enter are kept in this browser. To keep a record of each meeting, and to pick the plan up again next time:</p>
+    <ol class="flow">
+      <li><strong>Update the action plan</strong> in Step 5. Note what has been done, what has changed and what comes next.</li>
+      <li><strong>Select Save data file</strong> (top right of every page). The file holds everything entered in the tool, including the action plan, and its name includes the date.</li>
+      <li><strong>Keep the file with the meeting minutes</strong>, for example in a shared folder.</li>
+      <li><strong>At the next meeting, select Load data file</strong> to pick up where you left off.</li>
+    </ol>
+    <p class="muted">To compare rounds, load each saved file in turn and look at the dashboard. If browser data is cleared without a saved file, what you entered is lost.</p>
+  </div>
+
+  <div class="panel">
+    <h3>Start a new round of assessment</h3>
+    <p>When it is time to reassess (every 3-6 months), start a new round. The tool first saves a data file of the current round, then clears the resource answers and staff responses so you can enter the new ones.</p>
+    <p class="muted"><strong>Kept:</strong> facility details, ward names and beds, and the action plan. <strong>Cleared:</strong> resource answers, staff responses, the date of data collection, and patients in beds today.</p>
+    <p class="no-print" style="margin:.75rem 0 0"><button class="btn primary" type="button" id="new-round">Start a new round</button></p>
   </div>
 </section>
 
@@ -368,11 +391,45 @@ table.int td.x.selc{background:var(--amber-tint)}
 <section class="view" id="view-moreinfo">
   <h2>More info</h2>
 
-  <h3>Features that support effective care</h3>
+  <div class="panel theory">
+    <h3>The theory behind the tool</h3>
+    <p>Caring well for a severely unwell child depends on more than equipment and staff. It also depends on how people (staff, caregivers and bystanders) reason and respond to their environment and to each other. Equipment and staff matter, and Step 1 checks them. But they do not fully explain why care sometimes succeeds and sometimes breaks down.</p>
+    <p>Our research found three features of the work environment that make effective emergency care more likely: legitimacy, capability and connectedness.</p>
+  </div>
+
   <div class="mech-cards">
-    <div class="mech legit"><h3>Legitimacy</h3><p>Staff, caregivers and bystanders understand that urgent action is allowed and expected of them.</p></div>
-    <div class="mech cap"><h3>Capability</h3><p>Staff reason that they are able to act, based on knowledge, skills, confidence and the resources at hand.</p></div>
-    <div class="mech conn"><h3>Connectedness</h3><p>Care of the child is everyone's responsibility, coordinated across people and places, with information moving between them.</p></div>
+    <div class="mech legit">
+      <h3>Legitimacy</h3>
+      <p>Legitimacy refers to reasoning and responses that reflect an understanding that the care of the severely ill child is urgent and should be prioritised, and that action is desirable and expected.</p>
+      <p class="sub"><strong>In practice, staff think:</strong> "This child needs immediate action." "I am expected and allowed to act."</p>
+      <p class="sub"><strong>What makes it more likely:</strong> dedicated emergency space, a triage system, and clear scopes of practice.</p>
+      <p class="sub"><strong>Step 2 statements:</strong> 1, 3, 4, 6 and 7.</p>
+    </div>
+    <div class="mech cap">
+      <h3>Capability</h3>
+      <p>Capability refers to staff reasoning that they are able to act, based on their knowledge, skills, confidence, and access to the resources needed.</p>
+      <p class="sub"><strong>In practice, staff think:</strong> "I know what to do, and can do it."</p>
+      <p class="sub"><strong>What makes it more likely:</strong> tools at the point of care, training, and mentoring.</p>
+      <p class="sub"><strong>Step 2 statements:</strong> 2, 3 and 5.</p>
+    </div>
+    <div class="mech conn">
+      <h3>Connectedness</h3>
+      <p>Connectedness refers to an understanding of emergency care as a shared responsibility.</p>
+      <p class="sub"><strong>In practice, staff think:</strong> "This is our responsibility." "Others will help me."</p>
+      <p class="sub"><strong>What makes it more likely:</strong> handovers, escalation pathways, shared roles, and ways for caregivers to raise concerns.</p>
+      <p class="sub"><strong>Step 2 statements:</strong> 4 and 7.</p>
+    </div>
+  </div>
+
+  <div class="panel theory">
+    <h3>Across the patient journey</h3>
+    <p>These features matter at every point in a child's journey through the hospital: entry to care, recognition of illness, response, and continuity, escalation and referral. A breakdown early in the journey tends to affect the care that follows.</p>
+    <h3 style="margin-top:1.1rem">How the tool uses the theory</h3>
+    <ul class="notes">
+      <li><strong>Resources</strong> checks the material foundations: equipment, supplies, space and workforce.</li>
+      <li><strong>Environment</strong> asks staff seven statements, and the results are shown for each feature and for each phase of the journey.</li>
+      <li><strong>Interventions</strong> shows which features and phases each intervention is likely to strengthen, so that choices match the weaknesses found.</li>
+    </ul>
   </div>
 
   <div class="panel">
@@ -420,6 +477,10 @@ table.int td.x.selc{background:var(--amber-tint)}
       <h2>Step 2: Environment</h2>
       <p>Enter one row per staff member. Type a number from 1 to 5 in each question cell and the cursor moves to the next cell. Ward, role and seniority are free text, so use whatever labels fit your facility.</p>
     </div>
+  </div>
+  <div class="formlink no-print">
+    <a class="btn primary" href="forms/AAL-staff-survey-form.pdf" target="_blank" rel="noopener" download>Download the staff survey form (PDF)</a>
+    <span>Print one copy per respondent. Staff circle their answers on paper, and you enter them in the grid below.</span>
   </div>
   <div class="panel">
     <details>
@@ -861,13 +922,13 @@ document.addEventListener('click', e => {
 });
 
 /* ===================== DATA FILE: save / load / clear ===================== */
-$('#btn-save').addEventListener('click', () => {
+function saveDataFile() {
   const blob = new Blob([JSON.stringify({ app: 'PECDA', savedAt: new Date().toISOString(), state }, null, 2)], { type: 'application/json' });
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
   const nm = (state.facility.info.name || 'facility').replace(/[^a-z0-9]+/gi, '-').toLowerCase();
   a.download = `pecda-${nm}-${new Date().toISOString().slice(0, 10)}.json`; a.click(); URL.revokeObjectURL(a.href);
-  toast('Data file saved');
-});
+}
+$('#btn-save').addEventListener('click', () => { saveDataFile(); toast('Data file saved'); });
 $('#file-load').addEventListener('change', e => {
   const f = e.target.files[0]; if (!f) return;
   const rd = new FileReader();
@@ -1266,7 +1327,8 @@ function renderInterventions() {
   h += `<div class="table-scroll"><table class="data int"><thead><tr><th>Intervention</th>${ph.map(k => `<th class="${k === phase ? 'sel' : ''}">${esc(k === 'continuity' ? 'Continuity, escalation, referral' : PHASE_NAMES[k])}</th>`).join('')}${Object.keys(MECH).map(k => `<th class="${k === feat ? 'sel' : ''}">${MECH_NAMES[k]}</th>`).join('')}</tr></thead><tbody>${body}</tbody></table></div>
   <p class="legend" style="margin-top:.6rem">Within each group, interventions that match your chosen feature and phase are listed first. Ticks show the potential functions of each intervention. They are a guide, not a definitive map. In practice, functions depend on how the intervention is designed and implemented in your context.</p>`;
   const p = state.plan;
-  h += `<div class="panel" style="margin-top:1.5rem"><h3>Action plan</h3><p class="muted">Talk through the results with staff from different roles, agree a small number of feasible actions, and repeat the environment questions in 3 to 6 months to see what has changed.</p>
+  h += `<div class="panel" style="margin-top:1.5rem"><h3>Action plan</h3><p class="muted">Talk through the results with staff from different roles, agree a small number of feasible actions, and reassess every 3-6 months to see what has changed.</p>
+    <p class="muted no-print">The action plan is saved in this browser. To update it at later meetings and keep a record of each one, see <a href="#reassess">Step 6</a>.</p>
     <div class="plan">${[['chosen', 'Interventions we will try'], ['lead', 'Who leads, and who else is involved'], ['change', 'What we expect to change'], ['recheck', 'When we will re-check, and how']].map(([k, l]) => `<div class="field"><label for="pl-${k}">${l}</label><textarea id="pl-${k}" data-plan="${k}">${esc(p[k] || '')}</textarea></div>`).join('')}</div></div>`;
   $('#interv').innerHTML = h;
 }
@@ -1277,6 +1339,17 @@ $('#interv').addEventListener('change', e => {
 });
 $('#interv').addEventListener('click', e => { if (e.target.id === 'reset-focus') { state.focus = { feature: null, phase: null }; save(); renderInterventions(); } });
 $('#interv').addEventListener('input', e => { if (e.target.dataset.plan) { state.plan[e.target.dataset.plan] = e.target.value; save(); } });
+
+/* ===================== NEW ROUND ===================== */
+$('#new-round').addEventListener('click', () => {
+  if (!confirm('Start a new round?\n\nThe tool will first save a data file of the current round, then clear the resource answers and staff responses.\n\nKept: facility details, ward names and beds, and the action plan.\nCleared: resource answers, staff responses, the date of data collection, and patients in beds today.')) return;
+  saveDataFile();
+  const f = state.facility; f.answers = {}; f.nTotal = ''; f.nTrained = ''; f.info.date = '';
+  state.wards.forEach(w => { w.items = {}; w.vitals = {}; w.nOnDuty = ''; w.nTrained = ''; w.sysdesc = ''; w.info.patients = ''; });
+  state.respondents = [newResp()]; state.focus = { feature: null, phase: null };
+  save(); resSel = 'facility'; location.hash = 'resources';
+  toast('New round started. The previous round was saved as a file.');
+});
 
 /* ===================== PARTNER LOGOS ===================== */
 /* Put official logo files in a "logos" folder next to index.html, named as below (.svg or .png).
