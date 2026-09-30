@@ -991,6 +991,18 @@ input, select, textarea{
 .intervention-matrix td.matrix-priority:not(.domain-legitimacy):not(.domain-capability):not(.domain-connectedness){background:#eef5ff;}
 .cadre-score-note{font-size:12px;color:var(--muted);margin:6px 0 10px;}
 
+/* ---- v46: rounding note, resource x environment grid, action plan ---- */
+.rounding-note{background:#f8fafc;border:1px solid var(--line);border-left:4px solid #64748b;border-radius:12px;padding:10px 14px;margin:12px 0;font-size:13px;color:#334155;}
+.grid2x2{width:100%;border-collapse:separate;border-spacing:8px;background:transparent;border:0;}
+.grid2x2 th,.grid2x2 td{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff;vertical-align:top;font-size:13px;}
+.grid2x2 th{background:#f4f7fb;text-align:center;}
+.grid2x2 td.current{background:#eff6ff;border:2px solid #244c7c;font-weight:600;}
+.grid2x2 td .here{display:inline-block;font-size:11px;background:#244c7c;color:#fff;border-radius:999px;padding:2px 8px;margin-bottom:4px;}
+.action-plan-table td{padding:6px;}
+.action-plan-table textarea{min-height:60px;}
+.discussion-list li{margin:5px 0;}
+.resource-prompt{background:#fff8e6;border:1px solid #f3d99b;border-radius:10px;padding:8px 10px;margin:8px 0;font-size:13px;}
+.demo-panel{border:1px dashed #94a3b8;border-radius:14px;padding:14px;margin:16px 0;background:#f8fafc;}
 </style>
 </head>
 <body>
@@ -1038,6 +1050,15 @@ input, select, textarea{
       <h3>Step 5: Prioritise, design and adapt interventions</h3>
       <p>Use the resource and environment diagnosis to prioritise, design, adapt, and sequence a small number of locally feasible interventions.</p>
     </div>
+    <div class="step-card">
+      <h3>Step 6: Discuss, act and re-check</h3>
+      <p>Talk through the results with staff from different roles, agree a small action plan, and repeat the environment questions in 3&ndash;6 months to see what has changed.</p>
+    </div>
+  </div>
+  <div class="demo-panel">
+    <h3 style="margin-top:0;border:0;padding:0">Try it with an example</h3>
+    <p>Load a worked example based on Joseph&rsquo;s story (a six-month-old with chest indrawing whose oxygen was delayed). It shows how the resource and environment results point to a priority. <b>This replaces any data currently in the tool</b>, so download your JSON first if you have entered real data.</p>
+    <button type="button" class="secondary" data-action="loadExample">Load the Joseph example</button>
   </div>
 </section>
 
@@ -1110,6 +1131,7 @@ input, select, textarea{
 <section id="interventionsPage" class="page" hidden>
   <h2>7. Interventions</h2>
   <div id="lccInterventionMap"></div>
+  <div id="actionPlan"></div>
 
   <div class="panel export-panel">
     <h3>Export / reset</h3>
@@ -1143,7 +1165,7 @@ function esc(s){return String(s ?? '').replace(/[&<>"']/g, m=>({'&':'&amp;','<':
 function deepClone(o){ return JSON.parse(JSON.stringify(o)); }
 function newWard(name='Ward/unit 1'){ return {id:`ward_${Date.now()}_${Math.random().toString(16).slice(2)}`, name, profile:{ward_unit_name:name}, readiness:{}}; }
 function newRespondent(name='Respondent 1'){ return {id:`resp_${Date.now()}_${Math.random().toString(16).slice(2)}`, name, role:'', responses:{}}; }
-function defaultState(){ return {facility:{profile:{},availability:{}}, wards:[newWard('Ward/unit 1')], lccRespondents:[newRespondent('Respondent 1')]}; }
+function defaultState(){ return {facility:{profile:{},availability:{}}, wards:[newWard('Ward/unit 1')], lccRespondents:[newRespondent('Respondent 1')], actionPlan:[], reassess:{date:''}}; }
 function migrateState(s){
   if(!s || typeof s !== 'object') return defaultState();
   if(!s.facility) s.facility={profile:{},availability:{}};
@@ -1157,6 +1179,8 @@ function migrateState(s){
     s.lccRespondents=[r];
   }
   s.lccRespondents.forEach((r,i)=>{ if(!r.name) r.name=`Respondent ${i+1}`; if(!r.responses) r.responses={}; });
+  if(!Array.isArray(s.actionPlan)) s.actionPlan=[];
+  if(!s.reassess || typeof s.reassess!=='object') s.reassess={date:''};
   return s;
 }
 function loadState(){
@@ -1287,7 +1311,7 @@ function facilityComponents(){
     single('Treatment before payment','Human resources & systems',5), single('Nurse acute medical training','Human resources & systems',32), single('Triage guidelines','Human resources & systems',33), single('Emergency management guidelines','Human resources & systems',34)
   ];
 }
-function renderFacilityAvailability(){ const s=calculateFacilityAvailabilityScore(); document.getElementById('facilityAvailability').innerHTML=`<table class="resource-entry-table responsive-table"><thead><tr><th class="narrow"></th><th>Item</th><th class="medium">Available<br><span class="small">(circle Yes or No)</span></th><th class="comments">Comments</th><th class="analysis">Analysis<br><span class="small">(yes = 1 point)</span></th></tr></thead><tbody>${eecc.facility_availability.map(row=>{ const r=state.facility.availability[String(row.n)] || {}; return `<tr><td data-label="#">${row.n}</td><td data-label="Item">${esc(row.item)}${row.extra_fields?`<div class="small">${row.extra_fields.map(x=>esc(x)).join(' / ')}</div>`:''}</td><td data-label="Available">${renderYN(`facility.availability.${row.n}.value`, r.value || '')}</td><td data-label="Comments">${renderTextarea(`facility.availability.${row.n}.comment`, r.comment || '')}</td><td data-label="Analysis">${esc(row.analysis || '')}</td></tr>`; }).join('')}</tbody></table><div class="score-box"><b>Availability score:</b> ${s.points}/${s.denominator} = <b>${s.percent}%</b></div>`; }
+function renderFacilityAvailability(){ const s=calculateFacilityAvailabilityScore(); document.getElementById('facilityAvailability').innerHTML=`<table class="resource-entry-table responsive-table"><thead><tr><th class="narrow"></th><th>Item</th><th class="medium">Available<br><span class="small">(circle Yes or No)</span></th><th class="comments">Comments</th><th class="analysis">Analysis<br><span class="small">(yes = 1 point)</span></th></tr></thead><tbody>${eecc.facility_availability.map(row=>{ const r=state.facility.availability[String(row.n)] || {}; return `<tr><td data-label="#">${row.n}</td><td data-label="Item">${esc(row.item)}${row.extra_fields?`<div class="small">${row.extra_fields.map(x=>esc(x)).join(' / ')}</div>`:''}</td><td data-label="Available">${renderYN(`facility.availability.${row.n}.value`, r.value || '')}</td><td data-label="Comments">${renderTextarea(`facility.availability.${row.n}.comment`, r.comment || '')}</td><td data-label="Analysis">${esc(row.analysis || '')}</td></tr>`; }).join('')}</tbody></table><div class="score-box"><b>Availability score:</b> ${s.points}/${s.denominator} ≈ <b>${formatPct(s.percent)}</b> <span class="small">(nearest 5%)</span></div>`; }
 function renderWardSelect(){ const sel=document.getElementById('wardSelect'); sel.innerHTML=state.wards.map((w,i)=>`<option value="${i}" ${i===activeWardIndex?'selected':''}>${esc(w.name || w.profile.ward_unit_name || `Ward/unit ${i+1}`)}</option>`).join(''); }
 function renderWardProfile(){ const ward=getWard(); const wardName=ward.name || ward.profile.ward_unit_name || `Ward/unit ${activeWardIndex+1}`; const lab=document.getElementById('currentWardLabel'); if(lab) lab.innerHTML=`<b>Current ward/unit assessment:</b> ${esc(wardName)} <span class="small">(all ward/bedside readiness responses below refer to this ward/unit)</span>`; document.getElementById('wardProfile').innerHTML=`<table class="profile-table"><tbody>${eecc.ward_profile.map(f=>renderField(f,`ward.profile.${f.key}`, ward.profile[f.key] ?? '')).join('')}</tbody></table>`; }
 function calculateWardReadinessScore(ward){ const c=wardComponents(ward); const points=c.reduce((s,x)=>s+x.earned,0); const denominator=c.reduce((s,x)=>s+x.max,0); return {points,denominator,percent:denominator?Math.round(points/denominator*100):0,components:c}; }
@@ -1341,10 +1365,10 @@ function wardComponents(ward){
   return out;
 }
 
-function renderWardReadiness(){ const ward=getWard(); const s=calculateWardReadinessScore(ward); const rows=scoredWardReadinessRows(ward); document.getElementById('wardReadiness').innerHTML=`${wardScopeNote(ward)}<table class="resource-entry-table responsive-table"><thead><tr><th class="narrow"></th><th>Item</th><th>Count observed</th><th>Count functioning</th><th>Observed</th><th>Night availability at point of care</th><th class="comments">Comments</th><th class="analysis">Analysis</th></tr></thead><tbody>${rows.map(row=>{ const r=ward.readiness[String(row.n)] || {}; const base=`ward.readiness.${row.n}`; let countObserved='', countFunctioning='', observed='', available='', notRelevant=''; if(row.response_type==='count_frequency'){ countObserved=renderInput(`${base}.observed_count`, r.observed_count || '', 'number'); countFunctioning=renderInput(`${base}.functioning`, r.functioning || '', 'number'); available=renderRadio(`${base}.available`, r.available || '', ['Always','Usually','Rarely','Never'], true); } else if(row.response_type==='observed_frequency' || row.response_type==='observed_frequency_optional'){ observed=renderYN(`${base}.observed`, r.observed || ''); available=renderRadio(`${base}.available`, r.available || '', ['Always','Usually','Rarely','Never'], true); if(row.response_type==='observed_frequency_optional') notRelevant=`<label class="small"><input type="checkbox" data-path="${base}.not_relevant" ${r.not_relevant?'checked':''}> Not relevant for this ward/unit</label>`; } else if(row.response_type==='observed_only'){ observed=renderYN(`${base}.observed`, r.observed || ''); } else if(row.response_type==='number_only'){ observed=renderInput(`${base}.number`, r.number || '', 'number'); } return `<tr><td data-label="#">${row.n}</td><td data-label="Item">${esc(row.item)}${row.comment_prompt?`<div class="small">${esc(row.comment_prompt)}</div>`:''}${notRelevant}</td><td data-label="Count observed">${countObserved}</td><td data-label="Count functioning">${countFunctioning}</td><td data-label="Observed">${observed}</td><td data-label="Night availability">${available}</td><td data-label="Comments">${renderTextarea(`${base}.comment`, r.comment || '')}</td><td data-label="Analysis">${esc(row.analysis || '')}</td></tr>`; }).join('')}</tbody></table><div class="score-box"><b>Ward readiness score for ${esc(ward.name || ward.profile.ward_unit_name || `Ward/unit ${activeWardIndex+1}`)}:</b> ${s.points}/${s.denominator} = <b>${s.percent}%</b><div class="small">For rows 1–5, the automated score uses functioning count and “Always” night availability. Required count is at least 1 functioning item per 20 beds. Irrelevant adult or paediatric/neonatal size-specific items are excluded from the denominator. Oxytocin is included only for maternity/obstetric wards.</div></div>`; }
+function renderWardReadiness(){ const ward=getWard(); const s=calculateWardReadinessScore(ward); const rows=scoredWardReadinessRows(ward); document.getElementById('wardReadiness').innerHTML=`${wardScopeNote(ward)}<table class="resource-entry-table responsive-table"><thead><tr><th class="narrow"></th><th>Item</th><th>Count observed</th><th>Count functioning</th><th>Observed</th><th>Night availability at point of care</th><th class="comments">Comments</th><th class="analysis">Analysis</th></tr></thead><tbody>${rows.map(row=>{ const r=ward.readiness[String(row.n)] || {}; const base=`ward.readiness.${row.n}`; let countObserved='', countFunctioning='', observed='', available='', notRelevant=''; if(row.response_type==='count_frequency'){ countObserved=renderInput(`${base}.observed_count`, r.observed_count || '', 'number'); countFunctioning=renderInput(`${base}.functioning`, r.functioning || '', 'number'); available=renderRadio(`${base}.available`, r.available || '', ['Always','Usually','Rarely','Never'], true); } else if(row.response_type==='observed_frequency' || row.response_type==='observed_frequency_optional'){ observed=renderYN(`${base}.observed`, r.observed || ''); available=renderRadio(`${base}.available`, r.available || '', ['Always','Usually','Rarely','Never'], true); if(row.response_type==='observed_frequency_optional') notRelevant=`<label class="small"><input type="checkbox" data-path="${base}.not_relevant" ${r.not_relevant?'checked':''}> Not relevant for this ward/unit</label>`; } else if(row.response_type==='observed_only'){ observed=renderYN(`${base}.observed`, r.observed || ''); } else if(row.response_type==='number_only'){ observed=renderInput(`${base}.number`, r.number || '', 'number'); } return `<tr><td data-label="#">${row.n}</td><td data-label="Item">${esc(row.item)}${row.comment_prompt?`<div class="small">${esc(row.comment_prompt)}</div>`:''}${notRelevant}</td><td data-label="Count observed">${countObserved}</td><td data-label="Count functioning">${countFunctioning}</td><td data-label="Observed">${observed}</td><td data-label="Night availability">${available}</td><td data-label="Comments">${renderTextarea(`${base}.comment`, r.comment || '')}</td><td data-label="Analysis">${esc(row.analysis || '')}</td></tr>`; }).join('')}</tbody></table><div class="score-box"><b>Ward readiness score for ${esc(ward.name || ward.profile.ward_unit_name || `Ward/unit ${activeWardIndex+1}`)}:</b> ${s.points}/${s.denominator} ≈ <b>${formatPct(s.percent)}</b> <span class="small">(nearest 5%)</span><div class="small">For rows 1–5, the automated score uses functioning count and “Always” night availability. Required count is at least 1 functioning item per 20 beds. Irrelevant adult or paediatric/neonatal size-specific items are excluded from the denominator. Oxytocin is included only for maternity/obstetric wards.</div></div>`; }
 
 function renderLccRespondentSelect(){ const sel=document.getElementById('lccRespondentSelect'); if(!sel) return; sel.innerHTML=state.lccRespondents.map((r,i)=>`<option value="${i}" ${i===activeRespondentIndex?'selected':''}>${esc(r.name || `Respondent ${i+1}`)}${r.role?` — ${esc(r.role)}`:''}</option>`).join(''); }
-function renderLcc(){ const resp=getRespondent(); renderLccRespondentSelect(); document.getElementById('lccRespondentMeta').innerHTML=`<div class="two-col"><label>Respondent name ${renderInput('lccRespondent.name', resp.name || '', 'text')}</label><label>Respondent group/role ${renderInput('lccRespondent.role', resp.role || '', 'text', 'placeholder="e.g. nurse, doctor, manager, reception, security"')}</label></div>`; document.getElementById('lccItems').innerHTML=lccQuestions.map((q,i)=>{ const r=resp.responses[String(i)] || {}; const domainClass=(q.domain.toLowerCase().includes('legitimacy')&&q.domain.toLowerCase().includes('capability'))||(q.domain.toLowerCase().includes('legitimacy')&&q.domain.toLowerCase().includes('connectedness'))?'MixedDomain':q.domain.includes('Legitimacy')?'Legitimacy':q.domain.includes('Capability')?'Capability':'Connectedness'; return `<div class="lcc-card ${domainClass}"><h4>${esc(q.prompt)}</h4><p><b>${esc(q.context)}</b></p><table class="anchor-table"><tbody>${[1,2,3,4,5].map(n=>`<tr><td><label><input type="radio" name="lcc_${activeRespondentIndex}_${i}" data-path="lcc.${i}.score" value="${n}" ${String(r.score)===String(n)?'checked':''}> ${n}</label></td><td>${esc(q.anchors[String(n)])}</td></tr>`).join('')}</tbody></table><label>Evidence / comments ${renderTextarea(`lcc.${i}.comment`, r.comment || '')}</label></div>`; }).join(''); }
+function renderLcc(){ const resp=getRespondent(); renderLccRespondentSelect(); document.getElementById('lccRespondentMeta').innerHTML=`<div class="two-col"><label>Respondent name ${renderInput('lccRespondent.name', resp.name || '', 'text')}</label><label>Respondent group/role ${renderInput('lccRespondent.role', resp.role || '', 'text', 'placeholder="e.g. nurse, doctor, manager, reception, security"')}</label></div>`; document.getElementById('lccItems').innerHTML=lccQuestions.map((q,i)=>{ const r=resp.responses[String(i)] || {}; const domainClass=(q.domain.toLowerCase().includes('legitimacy')&&q.domain.toLowerCase().includes('capability'))||(q.domain.toLowerCase().includes('legitimacy')&&q.domain.toLowerCase().includes('connectedness'))?'MixedDomain':q.domain.includes('Legitimacy')?'Legitimacy':q.domain.includes('Capability')?'Capability':'Connectedness'; return `<div class="lcc-card ${domainClass}"><h4>${esc(q.prompt)}</h4><p><b>${esc(q.context)}</b></p><table class="anchor-table"><tbody>${[1,2,3,4,5].map(n=>`<tr><td><label><input type="radio" name="lcc_${activeRespondentIndex}_${i}" data-path="lcc.${i}.score" value="${n}" ${String(r.score)===String(n)?'checked':''}> ${n}</label></td><td>${esc(q.anchors[String(n)])}</td></tr>`).join('')}</tbody></table>${resourcePrompt(q)}<label>Evidence / comments ${renderTextarea(`lcc.${i}.comment`, r.comment || '')}</label></div>`; }).join(''); }
 function lccScoreFor(resp, idx){ const v=parseFloat(resp.responses?.[String(idx)]?.score || ''); return Number.isNaN(v)?null:v; }
 function domainWeights(q){ const d=q.domain.toLowerCase(); const weights={Legitimacy:0, Capability:0, Connectedness:0}; const domains=[]; if(d.includes('legitimacy')) domains.push('Legitimacy'); if(d.includes('capability')) domains.push('Capability'); if(d.includes('connectedness')) domains.push('Connectedness'); if(!domains.length) return weights; const w=1/domains.length; domains.forEach(x=>weights[x]=w); return weights; }
 function respondentDomainScores(resp){ const sums={Legitimacy:0, Capability:0, Connectedness:0}, denom={Legitimacy:0, Capability:0, Connectedness:0}; lccQuestions.forEach((q,i)=>{ const s=lccScoreFor(resp,i); if(s==null) return; const w=domainWeights(q); DOMAIN_ORDER.forEach(d=>{ if(w[d]){ sums[d]+=s*w[d]; denom[d]+=w[d]; } }); }); const out={}; DOMAIN_ORDER.forEach(d=>out[d]=denom[d]?sums[d]/denom[d]:null); return out; }
@@ -1354,8 +1378,42 @@ function percentile(sorted,p){ if(!sorted.length) return null; if(sorted.length=
 function stats(vals){ const arr=vals.filter(v=>v!=null && !Number.isNaN(v)).sort((a,b)=>a-b); if(!arr.length) return {n:0,median:null,q1:null,q3:null,iqr:null}; const q1=percentile(arr,0.25), median=percentile(arr,0.5), q3=percentile(arr,0.75); return {n:arr.length,median,q1,q3,iqr:q3-q1, values:arr}; }
 function mean(vals){ return vals.reduce((a,b)=>a+b,0)/vals.length; }
 function calculateLccSummary(){ const respondents=state.lccRespondents.map((r,i)=>({idx:i, respondent:r, overall:respondentOverallScore(r), domains:respondentDomainScores(r), phases:respondentPhaseScores(r)})); const domainStats={}; DOMAIN_ORDER.forEach(d=>domainStats[d]=stats(respondents.map(r=>r.domains[d]))); const phaseStats={}; PHASE_ORDER.forEach(p=>phaseStats[p]=stats(respondents.map(r=>r.phases[p]))); const overall=stats(respondents.map(r=>r.overall)); return {respondents, domainStats, phaseStats, overall}; }
-function formatPct(v){ return v==null?'—':`${Math.round(v)}%`; }
-function formatScore(v){ return v==null?'—':v.toFixed(1); }
+function formatPct(v){ return v==null||Number.isNaN(v)?'—':`${roundPct5(v)}%`; }
+function formatScore(v){ return v==null?'—':String(roundMedian(v)); }
+/* ---- Rounding and banding -------------------------------------------------
+   Scores are prompts for discussion, not measurements. Calculate with full
+   decimals; round only for display. Medians: a value exactly halfway rounds DOWN
+   (towards "less supportive"). IQR: exactly halfway rounds UP (towards "more
+   variation"). Resource percentages are shown to the nearest 5%.
+   Change these thresholds here if the guide changes. */
+function roundMedian(v){ return Math.min(5, Math.max(1, Math.ceil(Number(v) - 0.5 - 1e-9))); }
+function roundIqr(v){ return Math.floor(Number(v) + 0.5 + 1e-9); }
+function roundPct5(v){ return Math.round(Number(v) / 5) * 5; }
+const BANDS = {
+  weak:    {label:'Weakly supportive',   range:'1–2'},
+  partial: {label:'Partly supportive',   range:'3–4'},
+  strong:  {label:'Strongly supportive', range:'5'}
+};
+function bandKey(median){
+  if(median==null || Number.isNaN(median)) return null;
+  const r = roundMedian(median);
+  return r <= 2 ? 'weak' : (r <= 4 ? 'partial' : 'strong');
+}
+function bandPriority(median){
+  const k = bandKey(median);
+  if(!k) return {label:'No score yet', cls:'priority-low'};
+  if(k==='weak') return {label:'High priority', cls:'priority-high'};
+  if(k==='partial') return {label:'Partial / inconsistent', cls:'priority-mid'};
+  return {label:'Relative strength', cls:'priority-low'};
+}
+function spreadText(st){
+  if(!st || !st.n) return '';
+  if(st.n < 3) return 'too few responses to judge variation';
+  return roundIqr(st.iqr) >= 2 ? 'some variation: discuss' : 'low variation';
+}
+function roundingNote(){
+  return `<div class="rounding-note"><b>How to read the scores.</b> Scores are prompts for discussion, not measurements. They are averages of 1–5 ratings from a limited number of people, so they cannot support fine distinctions. Medians are shown as whole numbers (a value exactly halfway rounds down) and resource percentages to the nearest 5%. Treat scores that round to the same number as similar, and do not read meaning into differences of less than one point between wards, groups or assessment rounds.</div>`;
+}
 function categoryScoresFromComponents(components){ const out={}; components.forEach(c=>{ if(!out[c.category]) out[c.category]={earned:0,max:0}; out[c.category].earned+=c.earned; out[c.category].max+=c.max; }); Object.values(out).forEach(x=>{ x.percent=x.max?x.earned/x.max*100:null; }); return out; }
 function aggregateWardCategoryScores(){ const cats={}; state.wards.forEach(w=>{ const score=calculateWardReadinessScore(w); const by=categoryScoresFromComponents(score.components); Object.entries(by).forEach(([k,v])=>{ if(!cats[k]) cats[k]=[]; cats[k].push(v.percent); }); }); const out={}; Object.entries(cats).forEach(([k,vals])=>{ const valid=vals.filter(v=>v!=null); const pct=valid.length?mean(valid):null; out[k]={percent:pct,n:valid.length}; }); return out; }
 function bar(label, value, cls='', problem=false){
@@ -1372,7 +1430,7 @@ function contextScoreBar(label, value, cls='resource'){
   return `<div class="context-score">
     <div class="context-score-head">
       <span class="context-score-label">${esc(label)}</span>
-      <span class="context-score-value">${v==null?'—':Math.round(v)+'%'}</span>
+      <span class="context-score-value">${v==null?'—':roundPct5(v)+'%'}</span>
     </div>
     <div class="context-score-track" title="Higher is better">
       <div class="context-score-fill ${esc(cls)}" style="width:${v==null?0:v}%"></div>
@@ -1732,13 +1790,13 @@ function phasePriorityLabel(score){
 
 function scoreMedianText(st){
   if(!st || st.n===0 || st.median==null) return '—';
-  return `${formatScore(st.median)} / 5`;
+  return `${roundMedian(st.median)} / 5`;
 }
 function scoreRangeText(st){
   if(!st || st.n===0 || !Array.isArray(st.values) || !st.values.length) return '—';
   const min = Math.min(...st.values);
   const max = Math.max(...st.values);
-  return `${formatScore(min)}–${formatScore(max)} / 5`;
+  return `${Math.round(min)}–${Math.round(max)} / 5`;
 }
 
 function scoreToPercent(v){
@@ -1769,15 +1827,16 @@ function scoreDistributionGraphic(st, cls='phase'){
   const qRight = scoreToPercent(q3);
   const medLeft = scoreToPercent(med);
   const rangeWidth = Math.max(2, right - left);
+  const bk = bandKey(med); const bandLabel = bk ? BANDS[bk].label : ''; const spreadLabel = spreadText(st);
   const iqrWidth = Math.max(2, qRight - qLeft);
   return `<div class="score-distribution">
-    <div class="score-dist-track" aria-label="Median ${formatScore(med)}, IQR ${formatScore(q1)} to ${formatScore(q3)}, range ${formatScore(min)} to ${formatScore(max)}">
+    <div class="score-dist-track" aria-label="Median ${roundMedian(med)} of 5, ${esc(bandLabel)}; individual scores ${Math.round(min)} to ${Math.round(max)}">
       <div class="score-dist-range" style="left:${left}%;width:${rangeWidth}%;"></div>
       <div class="score-dist-iqr ${esc(cls)}" style="left:${qLeft}%;width:${iqrWidth}%;"></div>
       <div class="score-dist-median" style="left:${medLeft}%;"></div>
     </div>
     <div class="score-dist-scale"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
-    <div class="score-dist-text">Median ${formatScore(med)}; IQR ${formatScore(q1)}–${formatScore(q3)}; range ${formatScore(min)}–${formatScore(max)}${st.n?`; n=${st.n}`:''}</div>
+    <div class="score-dist-text"><b>Median ${roundMedian(med)}</b> of 5 · ${esc(bandLabel)}${spreadLabel?` · ${esc(spreadLabel)}`:''}${st.n?` · n=${st.n}`:''}<br>Individual scores ${Math.round(min)}–${Math.round(max)}</div>
   </div>`;
 }
 function scoreDistributionLegend(){
@@ -1832,16 +1891,26 @@ function renderResourceReviewInterventions(wardScores, actionRows){
   return `<p class="intervention-section-note">Review these wards/units first, then use the detailed list under <b>Interpretation - resources</b> to decide which gaps are feasible to address.</p>
     <div class="priority-ward-list">${priority.map(x=>`<div class="priority-ward-card">
       <h4>${esc(x.name)}</h4>
-      <div class="priority-ward-score">${x.score.points}/${x.score.denominator} (${x.score.percent}%)</div>
+      <div class="priority-ward-score">${x.score.points}/${x.score.denominator} (${formatPct(x.score.percent)})</div>
       <div class="priority-ward-meta">${x.issues.count} specific gap${x.issues.count===1?'':'s'} listed under Interpretation - resources</div>
       <div class="issue-pill-list">${x.issues.pills || '<span class="issue-pill">Low readiness score</span>'}</div>
     </div>`).join('')}</div>`;
 }
+function priorityPhaseKeys(statsByKey){
+  // Earliest phase that rounds to the weak band (1-2). If none is weak, the lowest phase(s); ties are all kept.
+  const scored = PHASE_ORDER.map(k => ({k, st:statsByKey[k]})).filter(x => x.st && x.st.n > 0 && x.st.median != null).map(x => ({k:x.k, r:roundMedian(x.st.median)}));
+  if(!scored.length) return {keys:[], mode:'none', alsoWeak:[]};
+  const weak = scored.filter(x => x.r <= 2);
+  if(weak.length) return {keys:[weak[0].k], mode:'earliest-weak', alsoWeak:weak.slice(1).map(x => x.k)};
+  const min = Math.min(...scored.map(x => x.r));
+  return {keys:scored.filter(x => x.r === min).map(x => x.k), mode:'lowest', alsoWeak:[]};
+}
 function scoredPriorityItems(statsByKey, order){
   const scored = order.map(key => ({key, st:statsByKey[key]})).filter(x => x.st && x.st.n > 0 && x.st.median != null);
   if(!scored.length) return [];
-  const min = Math.min(...scored.map(x => x.st.median));
-  return scored.filter(x => x.st.median === min);
+  if(order === PHASE_ORDER){ const keys = priorityPhaseKeys(statsByKey).keys; return scored.filter(x => keys.includes(x.key)); }
+  const min = Math.min(...scored.map(x => roundMedian(x.st.median)));
+  return scored.filter(x => roundMedian(x.st.median) === min);
 }
 function interventionResourceSignals(actionRows){
   const signals = new Set();
@@ -1860,16 +1929,11 @@ function interventionResourceSignals(actionRows){
   });
   return signals;
 }
-function weakestKeys(statsByKey, order){
-  const scored = order.map(key => ({key, st:statsByKey[key]})).filter(x => x.st && x.st.n > 0 && x.st.median != null);
-  if(!scored.length) return [];
-  const min = Math.min(...scored.map(x => x.st.median));
-  return scored.filter(x => x.st.median === min).map(x => x.key);
-}
+function weakestKeys(statsByKey, order){ return scoredPriorityItems(statsByKey, order).map(x => x.key); }
 function phaseLabel(key){ return key ? key.charAt(0)+key.slice(1).toLowerCase() : ''; }
 function scorePriorityText(st){
   if(!st || st.n === 0 || st.median == null) return 'No score yet';
-  return `${formatScore(st.median)} / 5, ${scoreInterpretation(st).toLowerCase()}`;
+  return `${roundMedian(st.median)} / 5, ${scoreInterpretation(st).toLowerCase()}`;
 }
 function scoreComponentRelevance(component, lcc, actionRows){
   let score = 0;
@@ -1959,7 +2023,7 @@ function renderPhaseInterventionCards(lcc){
   }
   return priorities.map(x => {
     const info = PHASE_INTERVENTION_NEEDS[x.key];
-    const p = phasePriorityLabel(x.st.median);
+    const p = bandPriority(x.st.median);
     const label = phaseLabel(x.key);
     return `<div class="intervention-card ${p.cls}">
       <div class="intervention-head">
@@ -1990,9 +2054,10 @@ function conditionChip(name){
 }
 function scoreInterpretation(st){
   if(!st || st.n === 0 || st.median == null) return 'No score yet';
-  if(st.median < 2.5) return 'Priority area to strengthen';
-  if(st.median < 3.5) return 'Partial or inconsistent';
-  return 'Relative strength';
+  const k = bandKey(st.median);
+  if(k === 'weak') return 'Weakly supportive: priority area to strengthen';
+  if(k === 'partial') return 'Partly supportive: present but inconsistent';
+  return 'Strongly supportive: relative strength';
 }
 function renderConditionsInterpretation(lcc){
   const domainInfo = {
@@ -2040,11 +2105,11 @@ function renderConditionsInterpretation(lcc){
     ? `<table class="phase-condition-table responsive-table"><thead><tr><th>Condition</th><th>Respondent group / cadre</th><th>Score distribution</th></tr></thead><tbody>${cadreRows.join('')}</tbody></table>`
     : `<div class="action-empty"><span class="muted">No respondent group/cadre data available yet. Add respondent roles on the Environment page to display this section.</span></div>`;
 
-  return `<div class="priority-callout"><h4>1. Environment by phase of care</h4><p class="environment-section-intro">This view shows where the hospital environment is strongest or weakest along the child's journey.</p>${scoreDistributionLegend()}</div>
+  return `${roundingNote()}${renderItemProfile()}<div class="priority-callout"><h4>2. Environment by phase of care</h4><p class="environment-section-intro">This view shows where the hospital environment is strongest or weakest along the child's journey.</p>${scoreDistributionLegend()}</div>
     <table class="phase-condition-table responsive-table"><thead><tr><th>Phase of care</th><th>Score distribution</th><th>Interpretation</th><th>What this means</th></tr></thead><tbody>${phaseRows}</tbody></table>
-    <div class="priority-callout"><h4>2. Environment by condition</h4><p class="environment-section-intro">This view summarises the three environmental conditions across the whole patient journey.</p>${scoreDistributionLegend()}</div>
+    <div class="priority-callout"><h4>3. Environment by condition</h4><p class="environment-section-intro">This view summarises the three environmental conditions across the whole patient journey. Connectedness is drawn from two questions only (who has responsibility for what, and when an emergency ends), both shared with legitimacy, so read it together with those two items.</p>${scoreDistributionLegend()}</div>
     <table class="phase-condition-table responsive-table"><thead><tr><th>Condition</th><th>Score distribution</th><th>Interpretation</th><th>What this means</th></tr></thead><tbody>${conditionRows}</tbody></table>
-    <div class="priority-callout"><h4>3. Environment scores by respondent group / cadre</h4><p class="environment-section-intro">This view shows whether different cadres or respondent groups score the same environmental conditions differently.</p>${scoreDistributionLegend()}</div>
+    <div class="priority-callout"><h4>4. Environment scores by respondent group / cadre</h4><p class="environment-section-intro">This view shows whether different cadres or respondent groups score the same environmental conditions differently.</p>${scoreDistributionLegend()}</div>
     <div class="cadre-score-note">Use this to prompt discussion about differences between roles, shifts, locations or levels of authority.</div>
     ${cadreTable}`;
 }
@@ -2095,10 +2160,24 @@ function renderLccInterventionMap(lcc, wardScores=[], actionRows=[]){
   const resourcePanel = renderResourceReviewInterventions(wardScores, actionRows);
   const phaseText = priorityPhases.length ? shortPhaseList(priorityPhases) : 'No Environment scores yet';
   const domainText = priorityDomains.length ? shortDomainList(priorityDomains) : 'No Environment scores yet';
+  const pp = priorityPhaseKeys(lcc.phaseStats || {});
+  const phaseSub = pp.mode === 'earliest-weak'
+    ? 'Earliest phase that is weakly supportive.' + (pp.alsoWeak.length ? ' Also weak: ' + shortPhaseList(pp.alsoWeak) + '.' : '')
+    : pp.mode === 'lowest'
+      ? 'No phase is weakly supportive, so this shows the lowest.' + (pp.keys.length > 1 ? ' These are tied after rounding: use the item-level answers and team judgement to choose.' : '')
+      : '';
+  const domainSub = priorityDomains.length > 1
+    ? 'Tied after rounding: treat as similar and use the item-level answers to choose.'
+    : 'Lowest median score after rounding.';
   return `<div class="panel">
       <h3>1. Resources needed</h3>
       <p class="intervention-section-note">Review priority wards/units for essential emergency and critical care resources. See <b>Interpretation - resources</b> for the detailed list of gaps.</p>
       ${resourcePanel}
+    </div>
+
+    <div class="panel">
+      <h3>Resources and environment together</h3>
+      ${renderResourceEnvironmentGrid(lcc, actionRows)}
     </div>
 
     <div class="panel">
@@ -2107,12 +2186,12 @@ function renderLccInterventionMap(lcc, wardScores=[], actionRows=[]){
         <div class="intervention-summary-card">
           <h4>Phase of care focus</h4>
           <div class="big">${esc(phaseText)}</div>
-          <div class="sub">Focus first on the earliest weak phase of care.</div>
+          <div class="sub">${esc(phaseSub)}</div>
         </div>
         <div class="intervention-summary-card">
           <h4>Priority environment area</h4>
           <div class="big">${esc(domainText)}</div>
-          <div class="sub">Strengthen the aspect of the work environment with the lowest median score.</div>
+          <div class="sub">${esc(domainSub)}</div>
         </div>
       </div>
     </div>
@@ -2121,7 +2200,116 @@ function renderLccInterventionMap(lcc, wardScores=[], actionRows=[]){
       <h3>3. Intervention options</h3>
       <p class="intervention-section-note">Use this matrix to identify interventions most aligned with the current results.</p>
       ${renderInterventionMatrix(lcc)}
-    </div>`;
+      <div class="table-note">The matrix is a starting point. Also consider feasibility, cost and local priorities. Interventions with no phase marked (audits, meetings, cross-unit roles, mentorship) are cross-cutting and can be considered whichever phase is weakest.</div>
+    </div>
+
+    ${renderDiscussionPanel()}`;
+}
+
+/* ---- v46 additions ------------------------------------------------------- */
+const RESOURCE_PROMPTS = {
+  CMOC2: 'If this is low, check the pulse oximetry findings on the Interpretation - resources page before choosing an intervention. Recognition depends on working, correctly sized equipment.',
+  CMOC5: 'If this is low, check the oxygen, IV fluid and medicine findings on the Interpretation - resources page. Staff may hold back because supplies are unreliable.'
+};
+function resourcePrompt(q){
+  return RESOURCE_PROMPTS[q.cmoc] ? `<div class="resource-prompt"><b>Check resources too:</b> ${esc(RESOURCE_PROMPTS[q.cmoc])}</div>` : '';
+}
+function renderItemProfile(){
+  const rows = lccQuestions.map((q,i) => {
+    const st = stats(state.lccRespondents.map(r => lccScoreFor(r,i)));
+    const cls = distributionClass(q.domain);
+    return `<tr><td data-label="Question"><b>${esc(q.prompt)}</b><div class="small">${esc(q.context)}</div></td><td data-label="Phase / condition"><span class="phase-label">${esc(phaseLabel(q.phase))}</span><br><span class="small">${esc(q.domain)}</span></td><td data-label="Score distribution">${scoreDistributionGraphic(st, cls)}</td><td data-label="Interpretation">${esc(scoreInterpretation(st))}${resourcePrompt(q)}</td></tr>`;
+  }).join('');
+  return `<div class="priority-callout"><h4>1. Environment by question</h4><p class="environment-section-intro">Start here. Each of the seven questions is a routine that staff can recognise on their own ward, so this is usually the easiest view to discuss. The phase and condition views below are built from these same answers.</p>${scoreDistributionLegend()}</div>
+    <table class="phase-condition-table responsive-table"><thead><tr><th>Question</th><th>Phase / condition</th><th>Score distribution</th><th>Interpretation</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+function renderResourceEnvironmentGrid(lcc, actionRows){
+  const sig = interventionResourceSignals(actionRows);
+  const criticalGap = sig.has('Oxygen') || sig.has('Pulse oximeter');
+  const scored = Object.values(lcc.domainStats || {}).concat(Object.values(lcc.phaseStats || {})).filter(st => st && st.n > 0 && st.median != null);
+  const envKnown = scored.length > 0;
+  const envWeak = scored.some(st => bandKey(st.median) === 'weak');
+  const cell = (isCurrent, text) => `<td class="${isCurrent ? 'current' : ''}">${isCurrent ? '<span class="here">Your result</span><br>' : ''}${text}</td>`;
+  const resAdequate = !criticalGap;
+  const grid = `<table class="grid2x2"><thead><tr><th></th><th>Environment: no area weakly supportive</th><th>Environment: at least one area weakly supportive</th></tr></thead><tbody>
+    <tr><th>No oxygen or pulse oximetry gap</th>${cell(envKnown && resAdequate && !envWeak, 'Sustain what works. Look at the item-level answers for smaller gaps.')}${cell(envKnown && resAdequate && envWeak, 'Choose environment interventions from the matrix below.')}</tr>
+    <tr><th>Oxygen or pulse oximetry gap</th>${cell(envKnown && !resAdequate && !envWeak, 'Fix the resource gap first: procure, repair or redistribute.')}${cell(envKnown && !resAdequate && envWeak, 'Unblock oxygen and pulse oximetry alongside low-cost environment changes. Environment interventions such as vital-signs routines cannot work without them.')}</tr>
+  </tbody></table>`;
+  const note = envKnown
+    ? '<div class="table-note">Resources and environment interact: a low score on recognition or treatment-before-diagnosis may partly reflect a resource gap. Here a resource gap means any oxygen or pulse oximetry gap on the resources pages; other gaps are still listed under Interpretation - resources.</div>'
+    : '<div class="table-note">Add Environment respondents to see where your result falls.</div>';
+  return grid + note;
+}
+function renderDiscussionPanel(){
+  return `<div class="panel">
+    <h3>Discuss the results with staff</h3>
+    <p class="intervention-section-note">The scores matter less than the conversation. Aim for a 60&ndash;90 minute meeting with a mix of roles (nurses, clinicians, reception, security, pharmacy and laboratory where possible), led by someone who is not the line manager of most attendees. A low score is an opportunity, not a judgement.</p>
+    <ul class="discussion-list">
+      <li>Which results surprised us? Which felt right?</li>
+      <li>Where do our answers differ between roles or wards, and why?</li>
+      <li>Think of a recent very sick child. Trace their journey from the gate onwards: where did care speed up or slow down? Which question does each delay match?</li>
+      <li>Which one or two changes would make the most difference, and who could start them next month?</li>
+    </ul>
+  </div>`;
+}
+function renderActionPlan(){
+  const el = document.getElementById('actionPlan');
+  if(!el) return;
+  const rows = state.actionPlan.map((a,i) => `<tr>
+    <td data-label="Problem">${`<textarea data-path="actionPlan.${i}.problem">${esc(a.problem)}</textarea>`}</td>
+    <td data-label="Function needed"><select data-path="actionPlan.${i}.fn"><option value=""></option>${['Legitimacy','Capability','Connectedness','Resources'].map(o=>`<option ${a.fn===o?'selected':''}>${o}</option>`).join('')}</select></td>
+    <td data-label="Intervention"><textarea data-path="actionPlan.${i}.intervention">${esc(a.intervention)}</textarea></td>
+    <td data-label="Lead"><input type="text" data-path="actionPlan.${i}.lead" value="${esc(a.lead)}"></td>
+    <td data-label="By when"><input type="date" data-path="actionPlan.${i}.due" value="${esc(a.due)}"></td>
+    <td data-label="How will we know?"><textarea data-path="actionPlan.${i}.measure">${esc(a.measure)}</textarea></td>
+    <td data-label=""><button type="button" class="danger" data-action="delAction" data-i="${i}">Remove</button></td></tr>`).join('');
+  el.innerHTML = `<div class="panel">
+    <h3>Action plan</h3>
+    <p class="intervention-section-note">Choose a small number of actions. Write the problem in your own words, say which function the action needs to strengthen, and how you will know it has worked.</p>
+    <div class="toolbar"><button type="button" data-action="addAction">Add action</button><button type="button" class="secondary" data-action="addFromDiagnosis">Add a row from the current diagnosis</button></div>
+    ${state.actionPlan.length ? `<table class="action-plan-table responsive-table"><thead><tr><th>Problem</th><th>Function needed</th><th>Intervention</th><th>Lead</th><th>By when</th><th>How will we know it worked?</th><th></th></tr></thead><tbody>${rows}</tbody></table>` : '<div class="action-empty">No actions yet.</div>'}
+    <div class="two-col" style="margin-top:12px"><label>Re-assess on (suggest 3&ndash;6 months) <input type="date" data-path="reassess.date" value="${esc(state.reassess.date || '')}"></label><div class="small">Repeat the environment questions with a similar mix of people. Compare bands and patterns, not decimals: a move of a full band, or a change in which areas are weakest, is worth discussing.</div></div>
+  </div>`;
+}
+function addActionFromDiagnosis(){
+  const lcc = calculateLccSummary();
+  const pp = priorityPhaseKeys(lcc.phaseStats);
+  const doms = weakestKeys(lcc.domainStats, DOMAIN_ORDER);
+  const phaseTxt = pp.keys.length ? phaseLabel(pp.keys[0]) + ' phase (' + BANDS[bandKey(lcc.phaseStats[pp.keys[0]].median)].label.toLowerCase() + ')' : '';
+  const problem = pp.keys.length ? `Priority phase: ${phaseTxt}. Priority condition: ${doms.join(' / ') || '—'}.` : '';
+  state.actionPlan.push({problem, fn: doms.length === 1 ? doms[0] : '', intervention:'', lead:'', due:'', measure:''});
+}
+function exampleState(){
+  const s = defaultState();
+  s.facility.profile = {health_facility:'Example general hospital (Joseph case)', country:'Example'};
+  eecc.facility_availability.forEach(r => { s.facility.availability[String(r.n)] = {value:'Y'}; });
+  s.facility.availability['4'] = {value:'N', comment:'No designated triage area in the outpatient department'};
+  s.facility.availability['33'] = {value:'N', comment:'No triage guideline'};
+  const w = s.wards[0];
+  w.name = 'Paediatric ward';
+  w.profile = {ward_unit_name:'Paediatric ward', specialty:['Paediatric'], number_of_beds:'30', number_of_patients:'26', patient_categories:['Children below12yrs']};
+  eecc.ward_readiness.forEach(r => {
+    const k = String(r.n);
+    if(r.response_type === 'count_frequency') w.readiness[k] = {observed_count:'2', functioning:'2', available:'Always'};
+    else if(r.response_type === 'observed_frequency' || r.response_type === 'observed_frequency_optional') w.readiness[k] = {observed:'Y', available:'Always'};
+    else if(r.response_type === 'observed_only') w.readiness[k] = {observed:'Y'};
+    else if(r.response_type === 'number_only') w.readiness[k] = {number: r.n === 33 ? '4' : '1'};
+  });
+  w.readiness['2'] = {observed_count:'1', functioning:'0', available:'Never', comment:'Only an adult probe; a paediatric probe was borrowed from maternity'};
+  w.readiness['30'] = {observed:'N'};
+  // Order of items: CMOC1, CMOC2, CMOC3, CMOC5, CMOC4, CMOC6, CMOC7
+  const mk = (name, role, scores, comments) => {
+    const r = newRespondent(name); r.role = role;
+    scores.forEach((v,i) => { r.responses[String(i)] = {score:v, comment:comments[i] || ''}; });
+    return r;
+  };
+  const c = {1:'No pulse oximeter in outpatients; illness noticed only from chest indrawing', 3:'Sent to the laboratory before oxygen was started', 4:'Nurse borrowed a probe from maternity'};
+  s.lccRespondents = [
+    mk('Respondent 1', 'Nurse (paediatric ward)', [4,1,2,2,4,2,3], c),
+    mk('Respondent 2', 'Clinical officer (OPD)', [4,1,2,2,3,3,3], c),
+    mk('Respondent 3', 'Manager', [5,2,3,3,4,3,4], {})
+  ];
+  return s;
 }
 
 function updateDashboard(){
@@ -2143,7 +2331,7 @@ function updateDashboard(){
 }
 function scoreIqrText(st){
   if(!st || st.n===0 || st.median==null) return '—';
-  return `${formatScore(st.median)} (${formatScore(st.q1)}–${formatScore(st.q3)})`;
+  return `${roundMedian(st.median)} (${Math.round(st.q1)}–${Math.round(st.q3)})`;
 }
 function percentMetric(label, value, sub=''){
   return `<div class="context-metric">
@@ -2189,7 +2377,7 @@ function renderContextMap(availabilityScore, wardScores, facCats, wardCats, lcc)
 
   const wardMetricCards = wardReadinessMetric(wardScores);
 
-  return `<div class="context-map">
+  return `${roundingNote()}<div class="context-map">
     <div class="context-title">Total scores</div>
     <div class="context-summary-grid">
       ${percentMetric('Facility EECC availability', availabilityScore.percent, `${availabilityScore.points}/${availabilityScore.denominator} points`)}
@@ -2242,16 +2430,16 @@ function renderContextMap(availabilityScore, wardScores, facCats, wardCats, lcc)
     </div>
   </div>`;
 }
-function renderAll(){ renderFacilityProfile(); renderFacilityAvailability(); renderWardSelect(); renderWardProfile(); renderWardReadiness(); renderLcc(); updateDashboard(); }
+function renderAll(){ renderFacilityProfile(); renderFacilityAvailability(); renderWardSelect(); renderWardProfile(); renderWardReadiness(); renderLcc(); updateDashboard(); renderActionPlan(); }
 function syncWardName(){ const w=getWard(); w.name=w.profile.ward_unit_name || w.name || `Ward/unit ${activeWardIndex+1}`; renderWardSelect(); }
 function syncRespondentName(){ const r=getRespondent(); if(!r.name) r.name=`Respondent ${activeRespondentIndex+1}`; renderLccRespondentSelect(); }
 function download(filename, content, type){ const blob=new Blob([content],{type}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); }
 function csvEscape(v){ const s=String(v ?? ''); return /[",\n]/.test(s)?`"${s.replaceAll('"','""')}"`:s; }
-function makeCsv(){ const rows=[['section','name','points_or_score','denominator','percent_or_median']]; const a=calculateFacilityAvailabilityScore(); rows.push(['facility_availability','Availability',a.points,a.denominator,a.percent]); state.wards.forEach((w,i)=>{ const s=calculateWardReadinessScore(w); rows.push(['ward_readiness',w.name||`Ward/unit ${i+1}`,s.points,s.denominator,s.percent]); }); const l=calculateLccSummary(); rows.push(['lcc','Median overall','','5',l.overall.median==null?'':l.overall.median.toFixed(2)]); DOMAIN_ORDER.forEach(d=>rows.push(['lcc_domain',d,'','5',l.domainStats[d].median==null?'':l.domainStats[d].median.toFixed(2)])); PHASE_ORDER.forEach(p=>rows.push(['lcc_phase',p,'','5',l.phaseStats[p].median==null?'':l.phaseStats[p].median.toFixed(2)])); return rows.map(r=>r.map(csvEscape).join(',')).join('\n'); }
+function makeCsv(){ const rows=[['section','name','value','denominator','band_or_note']]; const a=calculateFacilityAvailabilityScore(); rows.push(['facility_availability','Availability',a.points,a.denominator,`${roundPct5(a.percent)}% (nearest 5%)`]); state.wards.forEach((w,i)=>{ const s=calculateWardReadinessScore(w); rows.push(['ward_readiness',w.name||`Ward/unit ${i+1}`,s.points,s.denominator,`${roundPct5(s.percent)}% (nearest 5%)`]); }); const l=calculateLccSummary(); const lab=st=>{ if(!st||st.median==null) return ''; const k=bandKey(st.median); return `${BANDS[k].label} (${BANDS[k].range}); ${spreadText(st)}; n=${st.n}`; }; const med=st=>st&&st.median!=null?roundMedian(st.median):''; rows.push(['lcc','Median overall',med(l.overall),'5',lab(l.overall)]); DOMAIN_ORDER.forEach(d=>rows.push(['lcc_domain',d,med(l.domainStats[d]),'5',lab(l.domainStats[d])])); PHASE_ORDER.forEach(p=>rows.push(['lcc_phase',p,med(l.phaseStats[p]),'5',lab(l.phaseStats[p])])); lccQuestions.forEach((q,i)=>{ const st=stats(state.lccRespondents.map(r=>lccScoreFor(r,i))); rows.push(['lcc_item',`${q.cmoc}: ${q.prompt}`,med(st),'5',lab(st)]); }); state.actionPlan.forEach(x=>rows.push(['action_plan',x.intervention||x.problem||'',x.fn||'','',`lead: ${x.lead||''}; by: ${x.due||''}; measure: ${x.measure||''}`])); if(state.reassess&&state.reassess.date) rows.push(['reassess','Re-assess on',state.reassess.date,'','']); return rows.map(r=>r.map(csvEscape).join(',')).join('\n'); }
 
 document.addEventListener('input', e=>{ const el=e.target; const path=el.dataset.path; if(!path) return; if(el.type==='radio') return; let val=el.value; if(el.type==='number'){ val=clampNumberString(val); el.value=val; } handleSet(path,val); });
 document.addEventListener('change', e=>{ const el=e.target; const path=el.dataset.path; if(!path) return; let val; if(el.type==='checkbox' && el.name && document.querySelectorAll(`input[name="${CSS.escape(el.name)}"]`).length>1){ val=Array.from(document.querySelectorAll(`input[name="${CSS.escape(el.name)}"]:checked`)).map(x=>x.value); } else if(el.type==='checkbox') val=el.checked; else if(el.type==='radio') val=el.value; else { val=el.value; if(el.type==='number'){ val=clampNumberString(val); el.value=val; } } handleSet(path,val); });
-function handleSet(path,val){ if(path.startsWith('ward.')){ const ward=getWard(); const rel=path.replace(/^ward\./,''); setByPath(ward, rel.split('.'), val); if(path==='ward.profile.ward_unit_name') syncWardName(); saveState(); if(path.startsWith('ward.readiness') || path.startsWith('ward.profile')) renderWardReadiness(); updateDashboard(); return; } if(path.startsWith('lccRespondent.')){ const resp=getRespondent(); const rel=path.replace(/^lccRespondent\./,''); setByPath(resp, rel.split('.'), val); syncRespondentName(); saveState(); updateDashboard(); return; } if(path.startsWith('lcc.')){ const resp=getRespondent(); const parts=path.split('.'); const idx=parts[1], key=parts[2]; if(!resp.responses[idx]) resp.responses[idx]={}; resp.responses[idx][key]=val; saveState(); updateDashboard(); return; } setValue(path,val); saveState(); if(path.startsWith('facility.availability')) renderFacilityAvailability(); updateDashboard(); }
+function handleSet(path,val){ if(path.startsWith('actionPlan.') || path.startsWith('reassess.')){ setValue(path,val); saveState(); return; } if(path.startsWith('ward.')){ const ward=getWard(); const rel=path.replace(/^ward\./,''); setByPath(ward, rel.split('.'), val); if(path==='ward.profile.ward_unit_name') syncWardName(); saveState(); if(path.startsWith('ward.readiness') || path.startsWith('ward.profile')) renderWardReadiness(); updateDashboard(); return; } if(path.startsWith('lccRespondent.')){ const resp=getRespondent(); const rel=path.replace(/^lccRespondent\./,''); setByPath(resp, rel.split('.'), val); syncRespondentName(); saveState(); updateDashboard(); return; } if(path.startsWith('lcc.')){ const resp=getRespondent(); const parts=path.split('.'); const idx=parts[1], key=parts[2]; if(!resp.responses[idx]) resp.responses[idx]={}; resp.responses[idx][key]=val; saveState(); updateDashboard(); return; } setValue(path,val); saveState(); if(path.startsWith('facility.availability')) renderFacilityAvailability(); updateDashboard(); }
 
 document.querySelectorAll('.nav-button').forEach(btn=>btn.addEventListener('click',()=>{ document.querySelectorAll('.nav-button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.querySelectorAll('.page').forEach(p=>p.hidden=true); document.getElementById(btn.dataset.page).hidden=false; updateDashboard(); }));
 document.getElementById('wardSelect').addEventListener('change', e=>{ activeWardIndex=Number(e.target.value); renderWardSelect(); renderWardProfile(); renderWardReadiness(); updateDashboard(); });
@@ -2267,8 +2455,20 @@ document.getElementById('saveNowLcc').addEventListener('click',()=>{ saveState()
 document.getElementById('downloadJson').addEventListener('click',()=>download('facility-diagnostic-tool-data.json',JSON.stringify(state,null,2),'application/json'));
 document.getElementById('downloadCsv').addEventListener('click',()=>download('facility-diagnostic-tool-summary.csv',makeCsv(),'text/csv'));
 document.getElementById('clearAll').addEventListener('click',()=>{ if(confirm('Clear all saved data in this browser?')){ localStorage.removeItem(STORE_KEY); state=defaultState(); activeWardIndex=0; activeRespondentIndex=0; renderAll(); } });
+document.addEventListener('click', e=>{
+  const b = e.target.closest('[data-action]'); if(!b) return;
+  const a = b.dataset.action;
+  if(a === 'addAction'){ state.actionPlan.push({problem:'',fn:'',intervention:'',lead:'',due:'',measure:''}); saveState(); renderActionPlan(); }
+  else if(a === 'addFromDiagnosis'){ addActionFromDiagnosis(); saveState(); renderActionPlan(); }
+  else if(a === 'delAction'){ state.actionPlan.splice(Number(b.dataset.i),1); saveState(); renderActionPlan(); }
+  else if(a === 'loadExample'){
+    if(!confirm('This replaces the data currently in the tool with the Joseph example. Download your JSON first if you have entered real data. Continue?')) return;
+    state = exampleState(); activeWardIndex = 0; activeRespondentIndex = 0; saveState(); renderAll();
+    document.querySelector('.nav-button[data-page="dashboard"]').click();
+  }
+});
 window.__diagnosticTool = {state, eecc, lccQuestions, calculateFacilityAvailabilityScore, calculateWardReadinessScore, calculateLccSummary, renderAll};
-try { renderAll(); document.getElementById('loadStatus').innerHTML='<div class="instruction-box success-box"><b>Loaded:</b> EECC facility rows 34/34, ward rows 35/35, LCC items 7/7. Single-file v45.</div>'; } catch(e){ console.error(e); document.getElementById('loadStatus').innerHTML=`<div class="instruction-box error-box"><b>Loading error:</b> ${esc(e.message)}</div>`; }
+try { renderAll(); document.getElementById('loadStatus').innerHTML='<div class="instruction-box success-box"><b>Loaded:</b> EECC facility rows 34/34, ward rows 35/35, LCC items 7/7. Single-file v46.</div>'; } catch(e){ console.error(e); document.getElementById('loadStatus').innerHTML=`<div class="instruction-box error-box"><b>Loading error:</b> ${esc(e.message)}</div>`; }
 </script>
 </body>
 </html>
