@@ -48,6 +48,9 @@ button,input,select,textarea{font:inherit;color:inherit}
 .steps button{background:none;border:0;border-bottom:3px solid transparent;padding:.75rem .3rem;cursor:pointer;white-space:nowrap;color:var(--muted);font-weight:550;font-size:.84rem}
 .steps button:hover{color:var(--ink)}
 .steps button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+.steps .tgroup{display:flex;align-items:stretch;border:1px solid var(--line);border-radius:8px;margin:.4rem .5rem .4rem 0;padding:0 .35rem;background:var(--bg)}
+.steps .tglabel{align-self:center;font-size:.74rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);padding:0 .45rem 0 .3rem}
+.steps button.major{text-transform:uppercase;letter-spacing:.06em;font-weight:700;padding:.75rem .7rem}
 .steps .n{display:inline-block;min-width:1.35rem;height:1.35rem;line-height:1.35rem;padding:0 .25rem;box-sizing:border-box;text-align:center;border-radius:99px;background:var(--slate-tint);color:var(--slate);font-size:.74rem;margin-right:.3rem}
 .steps button[aria-selected="true"] .n{background:var(--ink);color:#fff}
 
@@ -172,6 +175,34 @@ textarea.paste{width:100%;min-height:6rem;border:1px solid #B8C4CD;border-radius
 .legend .lg{display:inline-flex;align-items:center;gap:.35rem;margin-right:1rem}
 .legend i{display:inline-block;width:2.2rem;height:.7rem;border-radius:3px;background:var(--slate);opacity:.5}
 .legend b.dot{display:inline-block;width:.7rem;height:.9rem;border:3px solid var(--slate);border-radius:3px;background:#fff;box-sizing:content-box;width:.35rem;height:.5rem}
+.dsec{margin:0 0 1.75rem;padding-left:1rem;border-left:5px solid var(--line)}
+.dsec.legit{border-left-color:var(--legit)} .dsec.cap{border-left-color:var(--cap)} .dsec.conn{border-left-color:var(--conn)}
+.dsec>h3{margin:0 0 .15rem} .dsec.legit>h3{color:var(--legit)} .dsec.cap>h3{color:var(--cap)} .dsec.conn>h3{color:var(--conn)}
+.dsec>p.muted{margin:0 0 .75rem}
+.scs{display:grid;gap:.5rem}
+.sc{border:1px solid var(--line);border-radius:8px;background:#fff}
+.sc.open{border-color:var(--cap)}
+.scbtn{all:unset;box-sizing:border-box;display:grid;grid-template-columns:1fr auto auto;gap:.9rem;align-items:center;width:100%;padding:.65rem .9rem;cursor:pointer;border-radius:8px}
+.scbtn:hover{background:var(--slate-tint)} .scbtn:focus-visible{outline:3px solid var(--legit);outline-offset:1px}
+.scl{font-weight:600} .scv{font-family:var(--serif);font-size:1.5rem;font-weight:600;font-variant-numeric:tabular-nums}
+.sch{font-size:.82rem;color:var(--cap);font-weight:600;text-decoration:underline;white-space:nowrap}
+.scd{padding:.2rem 1rem .9rem;border-top:1px solid var(--line)}
+details.more>summary{cursor:pointer;font-weight:600} details.more[open]>summary{margin-bottom:.5rem}
+@media(max-width:600px){.scbtn{grid-template-columns:1fr auto}.sch{grid-column:1/-1}}
+@media print{.scbtn{grid-template-columns:1fr auto}}
+.archs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:.7rem}
+.arch{display:grid;gap:.15rem;border:2px solid var(--line);border-radius:8px;padding:.7rem .85rem;background:#fff;cursor:pointer;position:relative}
+.arch input{position:absolute;opacity:0;inset:0;cursor:pointer}
+.arch:hover{background:var(--slate-tint)} .arch.on{border-color:var(--ink);background:var(--slate-tint)}
+.arch:focus-within{outline:3px solid var(--focus);outline-offset:2px}
+.arch .al{font-family:var(--serif);font-size:1.6rem;font-weight:700;line-height:1} .arch .an{font-weight:650} .arch .ad{font-size:.85rem;color:var(--muted)}
+.stat.hi{border-left:5px solid var(--ink)} .big.sm{font-size:1.55rem!important;line-height:1.2!important;margin-top:.25rem}
+.pickrow{display:grid;gap:.6rem;margin-top:.6rem}
+.resbox{border-radius:8px;padding:.9rem 1.1rem;margin:0 0 1.25rem;border:1px solid var(--line);background:#fff}
+.resbox h3{margin:0 0 .25rem} .resbox.gap{background:var(--amber-tint);border-color:var(--amber)} .resbox.gap h3{color:var(--amber-ink)}
+.resbox details{margin-top:.5rem} .resbox summary{cursor:pointer;font-weight:600}
+.acards{margin:.5rem 0 0;padding-left:1.4rem;display:grid;gap:.55rem} .acards li small{display:block;color:var(--muted)}
+details.more>summary{cursor:pointer;font-weight:600}
 .gap-list{margin:.25rem 0 0;padding-left:1.1rem}
 .gap-list li{margin-bottom:.25rem}
 .wardcard{border:1px solid var(--line);border-radius:8px;padding:.8rem 1rem;background:#fff;margin-bottom:.8rem}
@@ -327,13 +358,13 @@ h3{font-size:1.4rem}
 
 <nav class="steps" role="tablist" aria-label="Steps">
   <button role="tab" data-view="about"><span class="n">i</span>About</button>
-  <button role="tab" data-view="resources"><span class="n">1</span>Resources</button>
-  <button role="tab" data-view="environment"><span class="n">2</span>Environment</button>
-  <button role="tab" data-view="dashboard"><span class="n">3</span>Dashboard</button>
-  <button role="tab" data-view="interp-resources"><span class="n">4a</span>Interpret resources</button>
-  <button role="tab" data-view="interp-environment"><span class="n">4b</span>Interpret environment</button>
-  <button role="tab" data-view="interventions"><span class="n">5</span>Interventions</button>
-  <button role="tab" data-view="reassess"><span class="n">6</span>Reassess and learn</button>
+  <div class="tgroup" role="group" aria-label="Assess"><span class="tglabel">Assess</span>
+    <button role="tab" data-view="resources"><span class="n">1</span>Resources</button>
+    <button role="tab" data-view="environment"><span class="n">2</span>Environment</button>
+    <button role="tab" data-view="dashboard"><span class="n">3</span>Dashboard</button>
+  </div>
+  <button role="tab" class="major" data-view="interventions">Act</button>
+  <button role="tab" class="major" data-view="reassess">Learn</button>
   <button role="tab" data-view="moreinfo"><span class="n">?</span>More info</button>
 </nav>
 
@@ -353,10 +384,9 @@ h3{font-size:1.4rem}
     <ol class="howto">
       <li><strong>Assess resources.</strong> Assess equipment, supplies, space, and workforce at your hospital – overall and for each ward or unit caring for sick children.</li>
       <li><strong>Assess environment.</strong> Assess whether your hospital's work environment supports staff to care for sick children effectively.</li>
-      <li><strong>Review results.</strong></li>
-      <li><strong>Interpret results.</strong> Use the results to identify practical priorities for local action.</li>
-      <li><strong>Take action.</strong> Identify solutions and act.</li>
-      <li><strong>Reassess, learn and continue to improve.</strong> Meet monthly, reassess every 3-6 months.</li>
+      <li><strong>Review results.</strong> Use the results to identify practical priorities for local action.</li>
+      <li><strong>Act.</strong> Identify solutions and act.</li>
+      <li><strong>Learn: reassess and continue to improve.</strong> Meet monthly, reassess every 3-6 months.</li>
     </ol>
   </div>
 
@@ -369,7 +399,7 @@ h3{font-size:1.4rem}
 <section class="view" id="view-reassess">
   <div class="viewhead">
     <div>
-      <h2>Step 6: Reassess, learn and continue to improve</h2>
+      <h2>Learn: reassess and continue to improve</h2>
       <p>Emergency care improves through repeated cycles of assessing, acting and learning. Reassessing shows what has changed and what to do next.</p>
     </div>
     <button class="btn no-print" type="button" data-print>Print or save as PDF</button>
@@ -413,7 +443,7 @@ h3{font-size:1.4rem}
     <h3>Keep a record of each meeting in the tool</h3>
     <p>The action plan and everything else you enter are kept in this browser. To keep a record of each meeting, and to pick the plan up again next time:</p>
     <ol class="flow">
-      <li><strong>Update the action plan</strong> in Step 5. Note what has been done, what has changed and what comes next.</li>
+      <li><strong>Update the action plan</strong> in Act. Note what has been done, what has changed and what comes next.</li>
       <li><strong>Select Save data file</strong> (top right of every page). The file holds everything entered in the tool, including the action plan, and its name includes the date.</li>
       <li><strong>Keep the file with the meeting minutes</strong>, for example in a shared folder.</li>
       <li><strong>At the next meeting, select Load data file</strong> to pick up where you left off.</li>
@@ -464,7 +494,7 @@ h3{font-size:1.4rem}
     <ul class="notes">
       <li><strong>Resources</strong> checks the material foundations: equipment, supplies, space and workforce.</li>
       <li><strong>Environment</strong> asks staff seven statements, and the results are shown for each feature and for each phase of the journey.</li>
-      <li><strong>Interventions</strong> shows which features and phases each intervention is likely to strengthen, so that choices match the weaknesses found.</li>
+      <li><strong>Act</strong> shows which features and phases each intervention is likely to strengthen, so that choices match the weaknesses found.</li>
     </ul>
   </div>
 
@@ -478,7 +508,7 @@ h3{font-size:1.4rem}
       <li><strong>Environment scores.</strong> Each respondent's scores use the weighted formulas in the PECDA document (legitimacy, capability, connectedness) and the phase formulas (entry, recognition, response, continuity, escalation and referral). If a respondent skipped a question, their scores use the questions they answered.</li>
       <li><strong>Reading medians.</strong> Approximately 1 to 2 suggests a work environment that is weakly supportive and relies on individual problem solving and initiative; 3 to 4 partly supportive but not consistent across shifts and wards; close to 5 strongly supportive. Because the bands are approximate, the tool labels a median below 2.5 as weakly, 2.5 up to 4.5 as partly, and 4.5 or more as strongly supportive. It does not apply a minimum number of respondents.</li>
       <li><strong>Reading spread.</strong> An interquartile range of about 2 or more suggests substantial differences between staff and is worth discussing. About 0 to 1 suggests similar experiences. Values in between are labelled as a moderate spread.</li>
-      <li><strong>Suggested focus.</strong> The intervention page suggests the feature with the lowest median, and the earliest phase whose median is within half a point of the lowest phase. These are suggestions to start a conversation, and you can choose differently.</li>
+      <li><strong>Suggested focus.</strong> The Act page suggests the earliest phase whose median is within half a point of the lowest phase, and the lower of Legitimacy and Connectedness. Capability is covered by the resource gaps, which are always shown. These are suggestions to start a conversation, and you can choose differently.</li>
     </ul>
   </div>
 
@@ -496,7 +526,7 @@ h3{font-size:1.4rem}
 <section class="view" id="view-resources">
   <div class="viewhead">
     <div>
-      <h2>Step 1: Resources</h2>
+      <h2>Assess, step 1: Resources</h2>
       <p>EECC Part 1. Start with the facility form (about 10 minutes with the facility in-charge), then add a form for each ward or unit, completed by observing items with the ward in-charge.</p>
     </div>
   </div>
@@ -510,7 +540,7 @@ h3{font-size:1.4rem}
 <section class="view" id="view-environment">
   <div class="viewhead">
     <div>
-      <h2>Step 2: Environment</h2>
+      <h2>Assess, step 2: Environment</h2>
       <p>Enter one row per staff member. Type a number from 1 to 5 in each question cell and the cursor moves to the next cell. Ward, role and seniority are free text, so use whatever labels fit your facility.</p>
     </div>
   </div>
@@ -553,34 +583,16 @@ h3{font-size:1.4rem}
 <!-- DASHBOARD -->
 <section class="view" id="view-dashboard">
   <div class="viewhead">
-    <div><h2>Step 3: Dashboard</h2><p>A summary to discuss with staff. Scores are a guide for learning, not a measure of quality of care.</p></div>
+    <div><h2>Assess, step 3: Dashboard</h2><p>A summary to discuss with staff. Scores are a guide for learning, not a measure of quality of care.</p></div>
     <button class="btn no-print" type="button" data-print>Print or save as PDF</button>
   </div>
   <div id="dash"></div>
 </section>
 
-<!-- INTERPRET RESOURCES -->
-<section class="view" id="view-interp-resources">
-  <div class="viewhead">
-    <div><h2>Step 4a: Interpret resources</h2><p>Which inputs are missing, not working, or not always available where severely unwell children are cared for.</p></div>
-    <button class="btn no-print" type="button" data-print>Print or save as PDF</button>
-  </div>
-  <div id="interp-res"></div>
-</section>
-
-<!-- INTERPRET ENVIRONMENT -->
-<section class="view" id="view-interp-environment">
-  <div class="viewhead">
-    <div><h2>Step 4b: Interpret environment</h2><p>How medians differ between groups. Deeper amber means a lower median. Look for where experiences differ, and ask why.</p></div>
-    <button class="btn no-print" type="button" data-print>Print or save as PDF</button>
-  </div>
-  <div id="interp-env"></div>
-</section>
-
 <!-- INTERVENTIONS -->
 <section class="view" id="view-interventions">
   <div class="viewhead">
-    <div><h2>Step 5: Interventions</h2><p>Choose interventions by the functions they need to serve, not only by their label.</p></div>
+    <div><h2>Act</h2><p>Where to start, which interventions to consider, and what to check for how emergency care is organised in your hospital.</p></div>
     <button class="btn no-print" type="button" data-print>Print or save as PDF</button>
   </div>
   <div id="interv"></div>
@@ -908,7 +920,7 @@ const $ = (s, r) => (r || document).querySelector(s);
 const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
 
 function blankState() {
-  return { version: 1, facility: { info: {}, answers: {}, nTotal: '', nTrained: '' }, wards: [], respondents: [], focus: { feature: null, phase: null }, plan: {} };
+  return { version: 1, facility: { info: {}, answers: {}, nTotal: '', nTrained: '' }, wards: [], respondents: [], focus: { feature: null, phase: null }, archetype: null, plan: {} };
 }
 function newWard() {
   return { id: uid(), include: true, info: { name: '', type: '', specialty: '', beds: '', patients: '', admits: '', notes: '' }, items: {}, vitals: {}, nOnDuty: '', nTrained: '', sysdesc: '' };
@@ -934,13 +946,14 @@ function setPath(obj, path, val) {
 }
 
 /* ===================== NAVIGATION ===================== */
-const VIEWS = ['about', 'resources', 'environment', 'dashboard', 'interp-resources', 'interp-environment', 'interventions', 'reassess', 'moreinfo'];
+const VIEWS = ['about', 'resources', 'environment', 'dashboard', 'interventions', 'reassess', 'moreinfo'];
 let current = 'about';
 const RENDER = {
   resources: () => renderResources(), environment: () => renderEnvironment(), dashboard: () => renderDashboard(),
-  'interp-resources': () => renderInterpRes(), 'interp-environment': () => renderInterpEnv(), interventions: () => renderInterventions()
+  interventions: () => renderInterventions()
 };
 function show(view, noScroll) {
+  if (/^interp-/.test(view)) view = 'dashboard';
   if (!VIEWS.includes(view)) view = 'about';
   current = view;
   $$('.steps button').forEach(b => b.setAttribute('aria-selected', b.dataset.view === view));
@@ -1249,39 +1262,72 @@ function rangeRow(label, sub, s, color, title) {
       <span class="med" style="left:${pos(s.median)}%;border-color:${color}"></span></div>
     <div class="rv"><b>${fmt(s.median)}</b> median<br><small>IQR ${fmt(s.q1)} to ${fmt(s.q3)}${vr !== 'some' ? ', ' + VAR_TEXT[vr].toLowerCase() : ''}</small></div></div>`;
 }
+const uiDash = { open: new Set() };
+function mechSection(k, intro, st, extra) {
+  const cls = { legitimacy: 'legit', capability: 'cap', connectedness: 'conn' }[k];
+  let h = `<section class="dsec ${cls}"><h3>${MECH_NAMES[k]}</h3><p class="muted">${intro}</p>`;
+  if (st.n) h += `<div class="panel">${axisHTML()}${rangeRow('Staff experience score', st.n + ' respondent' + (st.n === 1 ? '' : 's'), st.mech[k], MECH_COLOR[k])}</div>`;
+  else h += emptyBox('No staff responses yet. Enter the seven statements for each respondent to see this score.', 'environment', 'Go to step 2');
+  return h + (extra || '') + `</section>`;
+}
+function scoreButton(key, label, valueText, detailHTML) {
+  const open = uiDash.open.has(key);
+  return `<div class="sc ${open ? 'open' : ''}"><button type="button" class="scbtn" data-gap="${key}" aria-expanded="${open}"><span class="scl">${label}</span><span class="scv">${valueText}</span><span class="sch no-print">${open ? 'Hide' : 'What is missing?'}</span></button>${open ? `<div class="scd">${detailHTML}</div>` : ''}</div>`;
+}
 function renderDashboard() {
   const fs = scoreFacility(state.facility), hasFac = fs.answered > 0;
   const wardsScored = state.wards.map((w, i) => ({ w, i, s: scoreWard(w) }));
   const ready = facilityReadiness(state.wards.filter(w => scoreWard(w).answered > 0));
   const a = activeResp(), st = envStats(a);
-  let h = `<h3>Resources</h3>`;
-  if (!hasFac && !wardsScored.some(x => x.s.answered)) h += emptyBox('No resource data yet. Enter the EECC Part 1 facility and ward forms to see scores here.', 'resources', 'Go to step 1');
+
+  // Legitimacy
+  let h = mechSection('legitimacy', 'Do staff feel that severely unwell children are recognised as a priority, and that staff are permitted to act?', st);
+
+  // Capability: staff score + resource scores
+  let res = `<div class="panel"><h4>Resources for emergency care</h4>`;
+  if (!hasFac && !wardsScored.some(x => x.s.answered)) res += emptyBox('No resource data yet. Enter the EECC Part 1 facility and ward forms to see scores here.', 'resources', 'Go to step 1');
   else {
-    h += `<div class="cards">
-      <div class="stat"><div class="big">${hasFac ? pct(fs.pct) : '\u2013'}</div><div class="lab">Facility availability</div><div class="sub">${hasFac ? `${fs.points} of ${fs.total} points. Is each essential resource available somewhere in the hospital?` : 'Facility form not entered'}</div></div>
-      <div class="stat"><div class="big">${ready == null ? '\u2013' : pct(ready)}</div><div class="lab">Facility readiness</div><div class="sub">${ready == null ? 'No ward forms entered' : 'Mean of the ward scores below. Are resources ready for use where children are cared for?'}</div></div>
-    </div>`;
+    res += `<p class="muted no-print">Select a score to see the full list of what is missing, not working or not always available.</p>`;
+    res += `<div class="scs">` + scoreButton('fac', 'Facility availability', hasFac ? pct(fs.pct) : '–',
+      hasFac ? `<p class="muted">${fs.points} of ${fs.total} points. Resources not available anywhere in the facility.</p>${gapsHTML(fs, FAC_LABELS)}` : '<p class="muted">Facility form not entered.</p>') + `</div>`;
     if (wardsScored.length) {
-      h += `<div class="panel"><h4>Ward readiness</h4><div class="bars">` + wardsScored.map(({ w, i, s }) => `<div class="bar"><span>${esc(wardName(w, i))}${w.include === false ? ' <small>(not in average)</small>' : ''}${s.answered < s.total ? ` <small>(${s.answered} of ${s.total} items entered)</small>` : ''}</span><div class="track"><div class="fill" style="width:${s.pct}%"></div></div><span class="val">${pct(s.pct)}</span></div>`).join('') + `</div></div>`;
+      res += `<h4 style="margin-top:1.1rem">Ward readiness${ready == null ? '' : ` <small class="muted">(mean ${pct(ready)})</small>`}</h4><div class="scs">` + wardsScored.map(({ w, i, s }) => {
+        const note = (w.include === false ? ' (not in average)' : '') + (s.answered < s.total ? ` (${s.answered} of ${s.total} items entered)` : '');
+        return scoreButton('w' + i, esc(wardName(w, i)) + (note ? ` <small class="muted">${esc(note)}</small>` : ''), s.answered ? pct(s.pct) : '–',
+          `<p class="muted">${s.points} of ${s.total} points. Missing, not working, or not always available on this ward.</p>${gapsHTML(s, WARD_LABELS)}`);
+      }).join('') + `</div>`;
     }
   }
-  h += `<h3 style="margin-top:1.75rem">Environment for emergency care</h3>`;
-  if (!st.n) h += emptyBox('No staff responses yet. Enter the seven statements for each respondent to see how staff experience the work environment.', 'environment', 'Go to step 2');
-  else {
-    h += `<p>${st.n} respondent${st.n === 1 ? '' : 's'}. Each bar shows the middle half of scores (IQR); the marker is the median.</p>
-    <div class="panel"><h4>Features that support effective care</h4>${axisHTML()}`;
-    Object.keys(MECH).forEach(k => { h += rangeRow(MECH_NAMES[k], '', st.mech[k], MECH_COLOR[k]); });
-    h += `</div><div class="panel"><h4>Phases of the patient journey</h4>${axisHTML()}`;
+  res += `</div>`;
+  h += mechSection('capability', 'Can staff deliver emergency care? Staff experience, and whether the essential resources are available and ready for use.', st, res);
+
+  // Connectedness
+  h += mechSection('connectedness', 'Do staff work together across roles and areas, with care that continues and escalates when needed?', st);
+
+  // Detail
+  if (st.n) {
+    h += `<details class="panel more"><summary>More detail: phases of the patient journey and individual statements</summary>
+      <h4>Phases of the patient journey</h4>${axisHTML()}`;
     Object.keys(PHASES).forEach(k => { h += rangeRow(PHASE_NAMES[k], '', st.phase[k], 'var(--slate)'); });
-    h += `</div><div class="panel"><h4>Individual statements</h4>${axisHTML()}`;
+    h += `<h4>Individual statements</h4>${axisHTML()}`;
     QUESTIONS.forEach((q, i) => { h += rangeRow('Q' + (i + 1) + ' ' + q.short, '', st.q[i], 'var(--slate)', q.text); });
-    h += `</div><div class="legend"><span class="lg"><i></i> middle half of scores (IQR)</span><span class="lg"><b class="dot"></b> median</span>
+    h += `</details>`;
+    h += `<div class="legend"><span class="lg"><i></i> middle half of scores (IQR)</span><span class="lg"><b class="dot"></b> median</span>
       <p style="margin-top:.5rem">Median about 1 to 2: weakly supportive, relies on individual problem solving. About 3 to 4: partly supportive, not consistent across shifts and wards. Close to 5: strongly supportive. A wide IQR (about 2 or more) suggests staff experience the environment differently, which is worth exploring.</p></div>`;
   }
   $('#dash').innerHTML = h;
 }
+$('#dash').addEventListener('click', e => {
+  const b = e.target.closest('[data-gap]'); if (!b) return;
+  const k = b.dataset.gap;
+  if (uiDash.open.has(k)) uiDash.open.delete(k); else uiDash.open.add(k);
+  const y = window.scrollY; renderDashboard(); window.scrollTo(0, y);
+  const nb = document.querySelector(`#dash [data-gap="${k}"]`); if (nb) nb.focus({ preventScroll: true });
+});
+// Print: show every list
+window.addEventListener('beforeprint', () => { if (location.hash.replace('#', '') === 'dashboard') { state.wards.forEach((_, i) => uiDash.open.add('w' + i)); uiDash.open.add('fac'); renderDashboard(); } });
 
-/* ===================== STEP 4: INTERPRET RESOURCES ===================== */
+/* ---------- Missing-item lists (used by the Dashboard) ---------- */
 function gapsHTML(score, labels) {
   const un = score.units.filter(u => u.status === 'unmet'), bl = score.units.filter(u => u.status === 'blank').length;
   let h = '';
@@ -1295,82 +1341,113 @@ function gapsHTML(score, labels) {
   if (bl) h += `<p class="muted">${bl} item${bl === 1 ? '' : 's'} not yet entered.</p>`;
   return h;
 }
-function renderInterpRes() {
+
+/* ===================== STEP 4: ACT (INTERVENTIONS) ===================== */
+/* Act page: suggestions by earliest weak phase x lowest condition (Legitimacy or Connectedness) */
+const ACT_IV = [
+  { n: 'Dedicated emergency space and patient flow organisation for children', p: 'er', c: 'lc' },
+  { n: 'High acuity area for children', p: 'rsc', c: 'lac' },
+  { n: 'Referral pre-notification systems', p: 'ersc', c: 'lc' },
+  { n: 'Triage system and triager role', p: 'ers', c: 'lac' },
+  { n: 'Clinical guidelines and protocols', p: 'rs', c: 'la' },
+  { n: 'Routine vital signs and pulse oximetry', p: 'rsc', c: 'la' },
+  { n: 'Nurse-initiated emergency care', p: 'sc', c: 'lac' },
+  { n: 'Lay/volunteer staff conducting limited clinical assessments', p: 'er', c: 'lc' },
+  { n: 'Standardised admission forms', p: 'rsc', c: 'ac' },
+  { n: 'Track-and-trigger charts', p: 'sc', c: 'lac' },
+  { n: 'Parental escalation systems', p: 'rsc', c: 'lc' },
+  { n: 'Standardised handover systems', p: 'c', c: 'lc' },
+  { n: 'Systems to bypass or expedite non-clinical steps', p: 'e', c: 'lc' },
+  { n: 'In-service training (including simulation)', p: 'rsc', c: 'ac' }
+];
+
+const ACT_PICKS = {
+  'entry|legitimacy': [2, 3, 0, 7, 12], 'entry|connectedness': [2, 3, 0, 7, 12],
+  'recognition|legitimacy': [1, 2, 3, 5, 10], 'recognition|connectedness': [1, 2, 3, 8, 10],
+  'response|legitimacy': [1, 2, 3, 5, 6], 'response|connectedness': [1, 2, 3, 6, 8],
+  'continuity|legitimacy': [1, 2, 5, 6, 9], 'continuity|connectedness': [1, 2, 6, 8, 9]
+};
+const ARCHETYPES = {
+  A: { name: 'OPD ‘screen and treat’', desc: 'All children, including the critically ill, are assessed and managed in the outpatient department (OPD).', pattern: 'After hours, care shifts to the inpatient ward.',
+    notes: ['Ensure the OPD is equipped for essential emergency and critical care (EECC).', 'Ensure a single point of entry, in hours and after hours.', 'Ensure nurses are authorised to act when doctors are not on site.'] },
+  B: { name: 'OPD ‘screen and send’', desc: 'Children are assessed in the OPD, then sent to the inpatient ward for emergency treatment.', pattern: 'Delays can arise in the transition across units.',
+    notes: ['Ensure the OPD can do a full assessment, including SpO₂.', 'Ensure there is a handover between units.', 'Escort sick children between units.', 'Ensure children identified as sick can receive treatment immediately.'] },
+  C: { name: 'ED ‘receive and treat’', desc: 'A dedicated emergency department (ED) assesses and treats children; the OPD handles ambulatory care.', pattern: 'Caregivers may go to the OPD instead of the ED.',
+    notes: ['Ensure a single point of entry, in hours and after hours.'] },
+  D: { name: 'IPD ‘receive and treat’', desc: 'The paediatric ward (inpatient department, IPD) does triage, assessment and emergency treatment in dedicated spaces.', pattern: 'The same staff face competing priorities.',
+    notes: ['Ensure a single point of entry, in hours and after hours.'] }
+};
+const ARCH_ALL = ['Ensure a single point of entry for sick neonates from the community.'];
+function resourceGapsBox() {
   const fs = scoreFacility(state.facility);
-  const any = fs.answered || state.wards.some(w => scoreWard(w).answered);
-  if (!any) { $('#interp-res').innerHTML = emptyBox('No resource data yet.', 'resources', 'Go to step 1'); return; }
-  let h = `<div class="panel"><h3>Facility level: ${fs.answered ? pct(fs.pct) : 'not entered'}</h3><p class="muted">Resources not available anywhere in the facility.</p>${gapsHTML(fs, FAC_LABELS)}</div>`;
   const ws = state.wards.map((w, i) => ({ w, i, s: scoreWard(w) })).filter(x => x.s.answered);
-  if (ws.length > 1) {
-    const rows = WARD_UNITS.map((u, ui) => ({ u, ui, hit: ws.filter(x => x.s.units[ui].status === 'unmet') })).filter(r => r.hit.length).sort((a, b) => b.hit.length - a.hit.length);
-    if (rows.length) h += `<div class="panel"><h3>Gaps found on several wards</h3><p class="muted">Resources that were missing, not working or not always available at night, and where.</p><div class="table-scroll"><table class="data"><thead><tr><th>Resource</th><th>Wards affected</th><th>Which wards</th></tr></thead><tbody>${rows.map(r => `<tr><td>${esc(unitName(r.u.ids, WARD_LABELS))}</td><td class="c">${r.hit.length} of ${ws.length}</td><td>${r.hit.map(x => esc(wardName(x.w, x.i))).join(', ')}</td></tr>`).join('')}</tbody></table></div></div>`;
-  }
-  ws.forEach(({ w, i, s }) => { h += `<div class="wardcard"><h4><span>${esc(wardName(w, i))}</span><span>${pct(s.pct)}</span></h4><p class="muted">Missing, not working, or not always available on this ward.</p>${gapsHTML(s, WARD_LABELS)}</div>`; });
-  $('#interp-res').innerHTML = h;
+  const facGaps = fs.units.filter(u => u.status === 'unmet').length;
+  const wardGaps = ws.map(x => ({ x, n: x.s.units.filter(u => u.status === 'unmet').length }));
+  const total = facGaps + wardGaps.reduce((a, g) => a + g.n, 0);
+  if (!fs.answered && !ws.length) return `<div class="resbox none"><h3>Resources</h3><p class="muted">No resource data entered yet. <a href="#resources">Go to Step 1</a> to check equipment, supplies, space and workforce.</p></div>`;
+  if (!total) return `<div class="resbox ok"><h3>Resources</h3><p>No resource gaps found in the items entered.</p></div>`;
+  let h = `<div class="resbox gap"><h3>Resources are missing</h3><p>Resolve these first, because the interventions below depend on them.</p>`;
+  if (facGaps) h += `<details open><summary>Facility: ${facGaps} item${facGaps === 1 ? '' : 's'} not available</summary>${gapsHTML(fs, FAC_LABELS)}</details>`;
+  wardGaps.filter(g => g.n).forEach(({ x, n }) => { h += `<details open><summary>${esc(wardName(x.w, x.i))}: ${n} item${n === 1 ? '' : 's'} missing, not working or not always available</summary>${gapsHTML(x.s, WARD_LABELS)}</details>`; });
+  return h + `<p class="muted no-print"><a href="#dashboard">See the scores on the Dashboard</a></p></div>`;
 }
-
-/* ===================== STEP 5: INTERPRET ENVIRONMENT ===================== */
-const uiEnv = { by: 'ward', cols: 'mp' };
-function shade(v) { const a = Math.max(0, Math.min(1, (5 - v) / 4)) * 0.7; return `rgba(217,130,43,${a.toFixed(3)})`; }
-function renderInterpEnv() {
-  const a = activeResp();
-  if (!a.length) { $('#interp-env').innerHTML = emptyBox('No staff responses yet.', 'environment', 'Go to step 2'); return; }
-  const key = { ward: 'ward', cadre: 'cadre', seniority: 'seniority' }[uiEnv.by], NR = '(not recorded)';
-  const groups = new Map();
-  a.forEach(r => { const raw = (r[key] || '').trim(), k = raw.toLowerCase() || NR; if (!groups.has(k)) groups.set(k, { name: raw || NR, list: [] }); groups.get(k).list.push(r); });
-  const cols = uiEnv.cols === 'mp'
-    ? Object.keys(MECH).map(k => ({ n: MECH_NAMES[k], cls: { legitimacy: 'h-legit', capability: 'h-cap', connectedness: 'h-conn' }[k], get: s => s.mech[k] }))
-      .concat(Object.keys(PHASES).map(k => ({ n: PHASE_NAMES[k], cls: '', get: s => s.phase[k] })))
-    : QUESTIONS.map((q, i) => ({ n: 'Q' + (i + 1), tip: q.short, cls: '', get: s => s.q[i] }));
-  const cell = s => s ? `<td class="c" style="background:${shade(s.median)}"><span class="m">${fmt(s.median)}</span><span class="i">IQR ${fmt(s.iqr)}</span></td>` : `<td class="c muted">\u2013</td>`;
-  const row = (name, list) => { const st = envStats(list); const vals = uiEnv.cols === 'mp'
-      ? Object.keys(MECH).map(k => st.mech[k]).concat(Object.keys(PHASES).map(k => st.phase[k])) : st.q; return `<tr><td>${esc(name)}</td><td class="c">${list.length}</td>${vals.map(cell).join('')}</tr>`; };
-  const sel = (id, v, opts) => `<div class="field"><label for="${id}">${id === 'g-by' ? 'Group by' : 'Show'}</label><select id="${id}">${opts.map(([k, l]) => `<option value="${k}" ${k === v ? 'selected' : ''}>${l}</option>`).join('')}</select></div>`;
-  let h = `<div class="ctrls no-print">${sel('g-by', uiEnv.by, [['ward', 'Ward or unit'], ['cadre', 'Role or cadre'], ['seniority', 'Seniority']])}${sel('g-cols', uiEnv.cols, [['mp', 'Features and phases'], ['q', 'Individual statements']])}</div>
-    <div class="table-scroll"><table class="data"><thead><tr><th>${uiEnv.by === 'ward' ? 'Ward or unit' : uiEnv.by === 'cadre' ? 'Role or cadre' : 'Seniority'}</th><th>People</th>${cols.map(c => `<th class="${c.cls}" ${c.tip ? `title="${esc(c.tip)}"` : ''}>${esc(c.n)}</th>`).join('')}</tr></thead><tbody>
-    ${row('All respondents', a)}${Array.from(groups.values()).map(g => row(g.name, g.list)).join('')}</tbody></table></div>
-    <p class="legend" style="margin-top:.75rem">Each cell shows the median, with the interquartile range beneath. Deeper amber means a lower median. Groups with very few people can point to individuals, so treat these as prompts for discussion at group level.</p>`;
-  $('#interp-env').innerHTML = h;
-}
-$('#interp-env').addEventListener('change', e => {
-  if (e.target.id === 'g-by') uiEnv.by = e.target.value; else if (e.target.id === 'g-cols') uiEnv.cols = e.target.value; else return;
-  renderInterpEnv();
-});
-
-/* ===================== STEP 6: INTERVENTIONS ===================== */
 function renderInterventions() {
   const st = envStats(activeResp()), sg = suggestFocus(st);
-  const feat = state.focus.feature || sg.feature, phase = state.focus.phase || sg.phase;
+  if (!st.n) { $('#interv').innerHTML = emptyBox('Act builds on the assessment. Enter staff responses first to see where to start.', 'environment', 'Go to step 2'); return; }
+  // condition: lower median of Legitimacy and Connectedness (Capability is covered by resources)
+  const two = ['legitimacy', 'connectedness'].filter(k => st.mech[k]);
+  const sugCond = two.length ? two.reduce((a, k) => st.mech[k].median < st.mech[a].median ? k : a, two[0]) : 'legitimacy';
+  const cond = ['legitimacy', 'connectedness'].includes(state.focus.feature) ? state.focus.feature : sugCond;
+  const phase = state.focus.phase || sg.phase || 'entry';
+  const phaseMed = st.phase[phase] ? fmt(st.phase[phase].median) : '–';
+  const overridden = (state.focus.phase && state.focus.phase !== sg.phase) || (state.focus.feature && state.focus.feature !== sugCond);
+  const arch = state.archetype && ARCHETYPES[state.archetype] ? state.archetype : null;
   let h = '';
-  if (st.n) {
-    const fm = sg.feature ? st.mech[sg.feature].median : null, pm = sg.phase ? st.phase[sg.phase].median : null;
-    h += `<div class="sugg"><p><strong>Suggested starting point</strong></p>
-      <p>Lowest median feature: <strong>${MECH_NAMES[sg.feature]}</strong> (median ${fmt(fm)})${sg.tiedFeatures.length > 1 ? `, tied with ${sg.tiedFeatures.slice(1).map(k => MECH_NAMES[k]).join(' and ')}` : ''}.<br>
-      Earliest weak phase: <strong>${PHASE_NAMES[sg.phase]}</strong> (median ${fmt(pm)}). Problems early in the patient journey tend to affect later phases, so the earliest phase within half a point of the lowest is suggested.</p>
-      <p class="muted">These are prompts for discussion. Choose differently below if the team's discussion points elsewhere.</p></div>`;
-  } else h += `<div class="empty" style="margin-bottom:1rem"><p>Enter environment responses to get a suggested starting point, or choose a feature and phase below.</p><button class="btn" type="button" data-go="environment">Go to step 2</button></div>`;
-  const pick = (name, cls, opts, cur) => `<div class="pick ${cls}" role="radiogroup">${opts.map(([k, l]) => `<label><input type="radio" name="${name}" value="${k}" ${cur === k ? 'checked' : ''}><span>${esc(l)}</span></label>`).join('')}</div>`;
-  h += `<div class="no-print"><h4>Feature to strengthen</h4>${pick('pf', 'feat', Object.entries(MECH_NAMES), feat)}
-    <h4>Phase of care to strengthen</h4>${pick('pp', 'phase', Object.entries(PHASE_NAMES), phase)}
-    ${state.focus.feature || state.focus.phase ? '<p><button class="btn quiet" type="button" id="reset-focus">Use the suggestion again</button></p>' : ''}</div>`;
-  const scored = INTERVENTIONS.map((iv, idx) => { const mp = phase && iv.phases.includes(phase) ? 1 : 0, mf = feat && iv.feats.includes(feat) ? 1 : 0; return { iv, idx, m: mp + mf }; });
-  const X = (on, sel) => `<td class="x ${sel ? 'selc' : ''}">${on ? '<span aria-label="yes">\u2713</span>' : '<span class="muted" aria-label="no"></span>'}</td>`;
+  // 1. archetype
+  h += `<div class="panel"><h3>1. Which archetype best describes how emergency care is organised here?</h3>
+    <p class="muted">From a process mapping study of 26 hospitals in Nigeria and Uganda (Subhi et al., PLOS Medicine). Choose the closest match.</p>
+    <div class="archs" role="radiogroup" aria-label="Archetype">${Object.keys(ARCHETYPES).map(k => `<label class="arch ${arch === k ? 'on' : ''}"><input type="radio" name="arch" value="${k}" ${arch === k ? 'checked' : ''}><span class="al">${k}</span><span class="an">${esc(ARCHETYPES[k].name)}</span><span class="ad">${esc(ARCHETYPES[k].desc)}</span></label>`).join('')}</div></div>`;
+  // 2. where to start
+  h += `<div class="panel"><h3>2. Where to start</h3>
+    <div class="cards"><div class="stat hi"><div class="lab">Earliest phase to strengthen</div><div class="big sm">${esc(PHASE_NAMES[phase])}</div><div class="sub">Median ${phaseMed}. Problems early in the journey tend to affect later phases.</div></div>
+    <div class="stat hi"><div class="lab">Priority condition to strengthen</div><div class="big sm">${MECH_NAMES[cond]}</div><div class="sub">Median ${fmt(st.mech[cond].median)}. The lower of Legitimacy and Connectedness. Capability is covered by resources, below.</div></div></div>
+    <details class="no-print"><summary>Choose a different phase or condition${overridden ? ' (changed from the suggestion)' : ''}</summary>
+      <div class="pickrow"><div class="pick phase" role="radiogroup" aria-label="Phase">${Object.entries(PHASE_NAMES).map(([k, l]) => `<label><input type="radio" name="pp" value="${k}" ${phase === k ? 'checked' : ''}><span>${esc(l)}</span></label>`).join('')}</div>
+      <div class="pick feat" role="radiogroup" aria-label="Condition">${['legitimacy', 'connectedness'].map(k => `<label><input type="radio" name="pf" value="${k}" ${cond === k ? 'checked' : ''}><span>${MECH_NAMES[k]}</span></label>`).join('')}</div>
+      ${state.focus.feature || state.focus.phase ? '<p><button class="btn quiet" type="button" id="reset-focus">Use the suggestion again</button></p>' : ''}</div></details></div>`;
+  // 3. resources
+  h += resourceGapsBox();
+  // 4. suggested interventions
+  const picks = (ACT_PICKS[phase + '|' + cond] || []).map(i => ACT_IV[i]);
+  const PL = { e: 'Entry', r: 'Recognition', s: 'Response', c: 'Continuity' }, CL = { l: 'Legitimacy', a: 'Capability', c: 'Connectedness' };
+  h += `<div class="panel"><h3>3. Interventions to consider</h3><p class="muted">For ${esc(PHASE_NAMES[phase])} and ${MECH_NAMES[cond]}. Agree a small number to try.</p>
+    <ol class="acards">${picks.map(v => `<li><strong>${esc(v.n)}</strong><small>Supports: ${v.p.split('').map(x => PL[x]).join(', ')}. Strengthens: ${v.c.split('').map(x => CL[x]).join(', ')}.</small></li>`).join('')}</ol></div>`;
+  // 5. archetype considerations
+  h += `<div class="panel arch-notes"><h3>4. ${arch ? `Things to check for archetype ${arch}: ${esc(ARCHETYPES[arch].name)}` : 'Things to check for your archetype'}</h3>`;
+  if (!arch) h += `<p class="muted">Choose an archetype above to see considerations specific to it.</p>`;
+  else h += `<p class="muted">Pattern seen in the study: ${esc(ARCHETYPES[arch].pattern)}</p>`;
+  h += `<ul class="notes">${(arch ? ARCHETYPES[arch].notes : []).concat(ARCH_ALL).map(n => `<li>${esc(n)}</li>`).join('')}</ul></div>`;
+  // 6. action plan
+  const p = state.plan;
+  h += `<div class="panel"><h3>5. Action plan</h3><p class="muted">Talk through the results with staff from different roles, agree a small number of feasible actions, and reassess every 3-6 months to see what has changed.</p>
+    <p class="muted no-print">The action plan is saved in this browser. To update it at later meetings and keep a record of each one, see <a href="#reassess">Learn</a>.</p>
+    <div class="plan">${[['chosen', 'Interventions we will try'], ['lead', 'Who leads, and who else is involved'], ['change', 'What we expect to change'], ['recheck', 'When we will re-check, and how']].map(([k, l]) => `<div class="field"><label for="pl-${k}">${l}</label><textarea id="pl-${k}" data-plan="${k}">${esc(p[k] || '')}</textarea></div>`).join('')}</div></div>`;
+  // 7. full list
+  const scored = INTERVENTIONS.map((iv, idx) => { const mp = phase && iv.phases.includes(phase) ? 1 : 0, mf = cond && iv.feats.includes(cond) ? 1 : 0; return { iv, idx, m: mp + mf }; });
+  const X = (on, sel) => `<td class="x ${sel ? 'selc' : ''}">${on ? '<span aria-label="yes">✓</span>' : '<span class="muted" aria-label="no"></span>'}</td>`;
   const ph = Object.keys(PHASES);
   const body = INTERVENTION_GROUPS.map((gname, gi) => {
     const list = scored.filter(r => r.iv.group === gi).sort((x, y) => y.m - x.m || x.idx - y.idx);
-    return `<tr class="grp"><td colspan="8">${esc(gname)}</td></tr>` + list.map(r => `<tr><td><strong>${esc(r.iv.name)}</strong></td>${ph.map(k => X(r.iv.phases.includes(k), k === phase)).join('')}${Object.keys(MECH).map(k => X(r.iv.feats.includes(k), k === feat)).join('')}</tr>`).join('');
+    return `<tr class="grp"><td colspan="8">${esc(gname)}</td></tr>` + list.map(r => `<tr><td><strong>${esc(r.iv.name)}</strong></td>${ph.map(k => X(r.iv.phases.includes(k), k === phase)).join('')}${Object.keys(MECH).map(k => X(r.iv.feats.includes(k), k === cond)).join('')}</tr>`).join('');
   }).join('');
-  h += `<div class="table-scroll"><table class="data int"><thead><tr><th>Intervention</th>${ph.map(k => `<th class="${k === phase ? 'sel' : ''}">${esc(k === 'continuity' ? 'Continuity, escalation, referral' : PHASE_NAMES[k])}</th>`).join('')}${Object.keys(MECH).map(k => `<th class="${k === feat ? 'sel' : ''}">${MECH_NAMES[k]}</th>`).join('')}</tr></thead><tbody>${body}</tbody></table></div>
-  <p class="legend" style="margin-top:.6rem">Within each group, interventions that match your chosen feature and phase are listed first. Ticks show the potential functions of each intervention. They are a guide, not a definitive map. In practice, functions depend on how the intervention is designed and implemented in your context.</p>`;
-  const p = state.plan;
-  h += `<div class="panel" style="margin-top:1.5rem"><h3>Action plan</h3><p class="muted">Talk through the results with staff from different roles, agree a small number of feasible actions, and reassess every 3-6 months to see what has changed.</p>
-    <p class="muted no-print">The action plan is saved in this browser. To update it at later meetings and keep a record of each one, see <a href="#reassess">Step 6</a>.</p>
-    <div class="plan">${[['chosen', 'Interventions we will try'], ['lead', 'Who leads, and who else is involved'], ['change', 'What we expect to change'], ['recheck', 'When we will re-check, and how']].map(([k, l]) => `<div class="field"><label for="pl-${k}">${l}</label><textarea id="pl-${k}" data-plan="${k}">${esc(p[k] || '')}</textarea></div>`).join('')}</div></div>`;
+  h += `<details class="panel more"><summary>See the full list of interventions</summary><div class="table-scroll"><table class="data int"><thead><tr><th>Intervention</th>${ph.map(k => `<th class="${k === phase ? 'sel' : ''}">${esc(k === 'continuity' ? 'Continuity, escalation, referral' : PHASE_NAMES[k])}</th>`).join('')}${Object.keys(MECH).map(k => `<th class="${k === cond ? 'sel' : ''}">${MECH_NAMES[k]}</th>`).join('')}</tr></thead><tbody>${body}</tbody></table></div>
+  <p class="legend" style="margin-top:.6rem">Interventions that match the chosen condition and phase are listed first within each group. Ticks show the potential functions of each intervention. They are a guide, not a definitive map. In practice, functions depend on how the intervention is designed and implemented in your context.</p></details>`;
   $('#interv').innerHTML = h;
 }
 $('#interv').addEventListener('change', e => {
   if (e.target.name === 'pf') state.focus.feature = e.target.value;
-  else if (e.target.name === 'pp') state.focus.phase = e.target.value; else return;
+  else if (e.target.name === 'pp') state.focus.phase = e.target.value;
+  else if (e.target.name === 'arch') state.archetype = e.target.value; else return;
   save(); renderInterventions();
 });
 $('#interv').addEventListener('click', e => { if (e.target.id === 'reset-focus') { state.focus = { feature: null, phase: null }; save(); renderInterventions(); } });
