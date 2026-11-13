@@ -394,9 +394,9 @@ h3{font-size:1.4rem}
   <div class="panel">
     <h3>How to use it</h3>
     <ol class="howto">
-      <li><strong>ASSESS:</strong> resources and work environment. Assess equipment, supplies, space and workforce at your hospital, overall and for each ward or unit caring for sick children. Then assess whether the work environment supports staff to care for sick children effectively.</li>
-      <li><strong>ACT:</strong> select and prioritise interventions. Review the results, then use them to choose practical priorities for local action.</li>
-      <li><strong>LEARN:</strong> meet, evaluate and reassess. Meet monthly, reassess every 3-6 months.</li>
+      <li><strong>ASSESS:</strong> resources and environment of care.</li>
+      <li><strong>ACT:</strong> select and prioritise solutions.</li>
+      <li><strong>LEARN:</strong> meet, evaluate and reassess.</li>
     </ol>
   </div>
 
@@ -596,11 +596,10 @@ h3{font-size:1.4rem}
     <div><h2>Act: select and prioritise interventions</h2><p>Review the results, then choose where to start and which interventions to try.</p></div>
     <button class="btn no-print" type="button" data-print>Print or save as PDF</button>
   </div>
-  <h3 class="sechead">Your results</h3>
-  <p class="muted">A summary to discuss with staff. Scores are a guide for learning, not a measure of quality of care.</p>
-  <div id="dash"></div>
-  <h3 class="sechead" style="margin-top:2rem">Prioritise and plan</h3>
+  <h3 class="sechead">Prioritise and plan</h3>
   <div id="interv"></div>
+  <h3 class="sechead" style="margin-top:2rem">Your results</h3>
+  <div id="dash"></div>
 </section>
 </main>
 
@@ -1012,7 +1011,7 @@ function seg(t, p, opts, cur) {
 }
 const YN = [{ v: 'Y', l: 'Yes' }, { v: 'N', l: 'No' }];
 const AV = AVAIL.map(a => ({ v: a, l: a }));
-const LEVELS = ['Dispensary', 'Health centre', 'District hospital', 'Regional hospital', 'National or university hospital', 'Other'];
+const LEVELS = ['Primary', 'Secondary', 'Tertiary'];
 const SPECIALTIES = ['Paediatric', 'Obstetrics and gynaecology', 'Surgical', 'Medical', 'General', 'Emergency unit', 'Outpatient department', 'HDU', 'ICU', 'Other'];
 function fld(t, p, label, val, type, opts) {
   opts = opts || {};
@@ -1048,8 +1047,7 @@ function facilityFormHTML() {
     ${fld('f', 'info.name', 'Health facility', i.name)}
     ${fld('f', 'info.level', 'Level of facility', i.level, 'text', { select: LEVELS })}
     ${fld('f', 'info.country', 'Country', i.country)}
-    ${fld('f', 'info.region', 'Region', i.region)}
-    ${fld('f', 'info.district', 'District', i.district)}
+    ${fld('f', 'info.state', 'State', i.state)}
     ${fld('f', 'info.respondent', 'Designation of respondent (facility in-charge)', i.respondent)}
     ${fld('f', 'info.beds', 'Total beds in the facility', i.beds, 'number')}
     ${fld('f', 'info.catchment', 'Catchment area (population)', i.catchment, 'number')}
@@ -1261,13 +1259,13 @@ function rangeRow(label, sub, s, color, title) {
   const pos = v => (v - 1) / 4 * 100;
   const band = bandOf(s.median), vr = variationOf(s.iqr);
   return `<div class="rr" ${title ? `title="${esc(title)}"` : ''}><div class="rl"><strong>${esc(label)}</strong>${sub ? `<small>${esc(sub)}</small>` : ''}
-    <span class="tag ${band === 'weak' ? 'weak' : ''}">${BAND_TEXT[band]}</span>${vr === 'some' ? `<span class="tag some">${VAR_TEXT.some}</span>` : ''}</div>
+    ${vr === 'some' ? `<span class="tag some">${VAR_TEXT.some}</span>` : ''}</div>
     <div class="track" role="img" aria-label="${esc(label)}: median ${fmt(s.median)}, interquartile range ${fmt(s.q1)} to ${fmt(s.q3)}">
       <span class="iqr" style="left:${pos(s.q1)}%;width:${Math.max(pos(s.q3) - pos(s.q1), 0.8)}%;background:${color}"></span>
       <span class="med" style="left:${pos(s.median)}%;border-color:${color}"></span></div>
     <div class="rv"><b>${fmt(s.median)}</b> median<br><small>IQR ${fmt(s.q1)} to ${fmt(s.q3)}${vr !== 'some' ? ', ' + VAR_TEXT[vr].toLowerCase() : ''}</small></div></div>`;
 }
-const uiDash = { open: new Set() };
+const uiDash = { open: new Set(), scoresOpen: false, moreOpen: false };
 function mechSection(k, intro, st, extra) {
   const cls = { legitimacy: 'legit', capability: 'cap', connectedness: 'conn' }[k];
   let h = `<section class="dsec ${cls}"><h3>${MECH_NAMES[k]}</h3><p class="muted">${intro}</p>`;
@@ -1309,19 +1307,21 @@ function renderDashboard() {
   // Connectedness
   h += mechSection('connectedness', 'Do staff work together across roles and areas, with care that continues and escalates when needed?', st);
 
+  h = `<details class="panel more" id="scores" ${uiDash.scoresOpen ? 'open' : ''}><summary>Scores: Legitimacy, Capability and Connectedness</summary><p class="muted">A summary to discuss with staff. Scores are a guide for learning, not a measure of quality of care.</p>${h}</details>`;
   // Detail
   if (st.n) {
-    h += `<details class="panel more"><summary>More detail: phases of the patient journey and individual statements</summary>
+    h += `<details class="panel more" id="moredetail" ${uiDash.moreOpen ? 'open' : ''}><summary>More detail: phases of the patient journey and individual statements</summary>
       <h4>Phases of the patient journey</h4>${axisHTML()}`;
     Object.keys(PHASES).forEach(k => { h += rangeRow(PHASE_NAMES[k], '', st.phase[k], 'var(--slate)'); });
     h += `<h4>Individual statements</h4>${axisHTML()}`;
     QUESTIONS.forEach((q, i) => { h += rangeRow('Q' + (i + 1) + ' ' + q.short, '', st.q[i], 'var(--slate)', q.text); });
     h += `</details>`;
     h += `<div class="legend"><span class="lg"><i></i> middle half of scores (IQR)</span><span class="lg"><b class="dot"></b> median</span>
-      <p style="margin-top:.5rem">Median about 1 to 2: weakly supportive, relies on individual problem solving. About 3 to 4: partly supportive, not consistent across shifts and wards. Close to 5: strongly supportive. A wide IQR (about 2 or more) suggests staff experience the environment differently, which is worth exploring.</p></div>`;
+      <p style="margin-top:.5rem">A wide IQR (about 2 or more) suggests staff experience the environment differently, which is worth exploring.</p></div>`;
   }
   $('#dash').innerHTML = h;
 }
+$('#dash').addEventListener('toggle', e => { if (e.target.id === 'scores') uiDash.scoresOpen = e.target.open; else if (e.target.id === 'moredetail') uiDash.moreOpen = e.target.open; }, true);
 $('#dash').addEventListener('click', e => {
   const b = e.target.closest('[data-gap]'); if (!b) return;
   const k = b.dataset.gap;
@@ -1330,7 +1330,7 @@ $('#dash').addEventListener('click', e => {
   const nb = document.querySelector(`#dash [data-gap="${k}"]`); if (nb) nb.focus({ preventScroll: true });
 });
 // Print: show every list
-window.addEventListener('beforeprint', () => { if (location.hash.replace('#', '') === 'interventions') { state.wards.forEach((_, i) => uiDash.open.add('w' + i)); uiDash.open.add('fac'); renderDashboard(); } });
+window.addEventListener('beforeprint', () => { if (location.hash.replace('#', '') === 'interventions') { state.wards.forEach((_, i) => uiDash.open.add('w' + i)); uiDash.open.add('fac'); uiDash.scoresOpen = true; uiDash.moreOpen = true; renderDashboard(); } });
 
 /* ---------- Missing-item lists (used by the Dashboard) ---------- */
 function gapsHTML(score, labels) {
@@ -1427,7 +1427,7 @@ function renderInterventions() {
   const picks = (ACT_PICKS[phase + '|' + cond] || []).map(i => ACT_IV[i]);
   const PL = { e: 'Entry', r: 'Recognition', s: 'Response', c: 'Continuity' }, CL = { l: 'Legitimacy', a: 'Capability', c: 'Connectedness' };
   h += `<div class="panel"><h3>3. Interventions to consider</h3><p class="muted">For ${esc(PHASE_NAMES[phase])} and ${MECH_NAMES[cond]}. Agree a small number to try.</p>
-    <ol class="acards">${picks.map(v => `<li><strong>${esc(v.n)}</strong><small>Supports: ${v.p.split('').map(x => PL[x]).join(', ')}. Strengthens: ${v.c.split('').map(x => CL[x]).join(', ')}.</small></li>`).join('')}</ol></div>`;
+    <ol class="acards">${picks.map(v => `<li><strong>${esc(v.n)}</strong></li>`).join('')}</ol></div>`;
   // 5. archetype considerations
   h += `<div class="panel arch-notes"><h3>4. ${arch ? `Things to check for archetype ${arch}: ${esc(ARCHETYPES[arch].name)}` : 'Things to check for your archetype'}</h3>`;
   if (!arch) h += `<p class="muted">Choose an archetype above to see considerations specific to it.</p>`;
@@ -1458,8 +1458,8 @@ $('#interv').addEventListener('change', e => {
 });
 $('#interv').addEventListener('click', e => {
   if (e.target.closest('[data-showgaps]')) {
-    uiDash.open.add('fac'); state.wards.forEach((_, i) => uiDash.open.add('w' + i)); renderDashboard();
-    const t = $('#dash'); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); return;
+    uiDash.open.add('fac'); state.wards.forEach((_, i) => uiDash.open.add('w' + i)); uiDash.scoresOpen = true; renderDashboard();
+    const t = $('#scores') || $('#dash'); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); return;
   }
   if (e.target.id === 'reset-focus') { state.focus = { feature: null, phase: null }; save(); renderInterventions(); } });
 $('#interv').addEventListener('input', e => { if (e.target.dataset.plan) { state.plan[e.target.dataset.plan] = e.target.value; save(); } });
