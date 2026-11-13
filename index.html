@@ -1287,7 +1287,7 @@ function renderDashboard() {
   let h = mechSection('legitimacy', 'Do staff feel that severely unwell children are recognised as a priority, and that staff are permitted to act?', st);
 
   // Capability: staff score + resource scores
-  let res = `<div class="panel"><h4>Resources for emergency care</h4>`;
+  let res = `<div class="panel" id="res-panel"><h4>Resources for emergency care</h4>`;
   if (!hasFac && !wardsScored.some(x => x.s.answered)) res += emptyBox('No resource data yet. Enter the EECC Part 1 facility and ward forms to see scores here.', 'resources', 'Go to Resources');
   else {
     res += `<p class="muted no-print">Select a score to see the full list of what is missing, not working or not always available.</p>`;
@@ -1374,15 +1374,15 @@ const ACT_PICKS = {
 };
 const ARCHETYPES = {
   A: { name: 'OPD ‘screen and treat’', desc: 'All children, including the critically ill, are assessed and managed in the outpatient department (OPD).', pattern: 'After hours, care shifts to the inpatient ward.',
-    notes: ['Ensure the OPD is equipped for essential emergency and critical care (EECC).', 'Ensure a single point of entry, in hours and after hours.', 'Ensure nurses are authorised to act when doctors are not on site.'] },
+    notes: ['Ensure the OPD is equipped for essential emergency and critical care (EECC).'] },
   B: { name: 'OPD ‘screen and send’', desc: 'Children are assessed in the OPD, then sent to the inpatient ward for emergency treatment.', pattern: 'Delays can arise in the transition across units.',
     notes: ['Ensure the OPD can do a full assessment, including SpO₂.', 'Ensure there is a handover between units.', 'Escort sick children between units.', 'Ensure children identified as sick can receive treatment immediately.'] },
   C: { name: 'ED ‘receive and treat’', desc: 'A dedicated emergency department (ED) assesses and treats children; the OPD handles ambulatory care.', pattern: 'Caregivers may go to the OPD instead of the ED.',
-    notes: ['Ensure a single point of entry, in hours and after hours.'] },
+    notes: [] },
   D: { name: 'IPD ‘receive and treat’', desc: 'The paediatric ward (inpatient department, IPD) does triage, assessment and emergency treatment in dedicated spaces.', pattern: 'The same staff face competing priorities.',
-    notes: ['Ensure a single point of entry, in hours and after hours.'] }
+    notes: [] }
 };
-const ARCH_ALL = ['Ensure a single point of entry for sick neonates from the community.'];
+const ARCH_ALL = ['Ensure a single point of entry for all patients, in hours and after hours (including neonates presenting from the community).'];
 function resourceGapsBox() {
   const fs = scoreFacility(state.facility);
   const ws = state.wards.map((w, i) => ({ w, i, s: scoreWard(w) })).filter(x => x.s.answered);
@@ -1411,12 +1411,11 @@ function renderInterventions() {
   let h = '';
   // 1. archetype
   h += `<div class="panel"><h3>1. Which archetype best describes how emergency care is organised here?</h3>
-    <p class="muted">From a process mapping study of 26 hospitals in Nigeria and Uganda (Subhi et al., PLOS Medicine). Choose the closest match.</p>
     <div class="archs" role="radiogroup" aria-label="Archetype">${Object.keys(ARCHETYPES).map(k => `<label class="arch ${arch === k ? 'on' : ''}"><input type="radio" name="arch" value="${k}" ${arch === k ? 'checked' : ''}><span class="al">${k}</span><span class="an">${esc(ARCHETYPES[k].name)}</span><span class="ad">${esc(ARCHETYPES[k].desc)}</span></label>`).join('')}</div></div>`;
   // 2. where to start
   h += `<div class="panel"><h3>2. Where to start</h3>
-    <div class="cards"><div class="stat hi"><div class="lab">Earliest phase to strengthen</div><div class="big sm">${esc(PHASE_NAMES[phase])}</div><div class="sub">Median ${phaseMed}. Problems early in the journey tend to affect later phases.</div></div>
-    <div class="stat hi"><div class="lab">Priority condition to strengthen</div><div class="big sm">${MECH_NAMES[cond]}</div><div class="sub">Median ${fmt(st.mech[cond].median)}. The lower of Legitimacy and Connectedness. Capability is covered by resources, below.</div></div></div>
+    <div class="cards"><div class="stat hi"><div class="lab">Earliest phase to strengthen</div><div class="big sm">${esc(PHASE_NAMES[phase])}</div><div class="sub">Median ${phaseMed}.</div></div>
+    <div class="stat hi"><div class="lab">Priority condition to strengthen</div><div class="big sm">${MECH_NAMES[cond]}</div><div class="sub">Median ${fmt(st.mech[cond].median)}.</div></div></div>
     <details class="no-print"><summary>Choose a different phase or condition${overridden ? ' (changed from the suggestion)' : ''}</summary>
       <div class="pickrow"><div class="pick phase" role="radiogroup" aria-label="Phase">${Object.entries(PHASE_NAMES).map(([k, l]) => `<label><input type="radio" name="pp" value="${k}" ${phase === k ? 'checked' : ''}><span>${esc(l)}</span></label>`).join('')}</div>
       <div class="pick feat" role="radiogroup" aria-label="Condition">${['legitimacy', 'connectedness'].map(k => `<label><input type="radio" name="pf" value="${k}" ${cond === k ? 'checked' : ''}><span>${MECH_NAMES[k]}</span></label>`).join('')}</div>
@@ -1431,7 +1430,6 @@ function renderInterventions() {
   // 5. archetype considerations
   h += `<div class="panel arch-notes"><h3>4. ${arch ? `Things to check for archetype ${arch}: ${esc(ARCHETYPES[arch].name)}` : 'Things to check for your archetype'}</h3>`;
   if (!arch) h += `<p class="muted">Choose an archetype above to see considerations specific to it.</p>`;
-  else h += `<p class="muted">Pattern seen in the study: ${esc(ARCHETYPES[arch].pattern)}</p>`;
   h += `<ul class="notes">${(arch ? ARCHETYPES[arch].notes : []).concat(ARCH_ALL).map(n => `<li>${esc(n)}</li>`).join('')}</ul></div>`;
   // 6. action plan
   const p = state.plan;
@@ -1459,7 +1457,7 @@ $('#interv').addEventListener('change', e => {
 $('#interv').addEventListener('click', e => {
   if (e.target.closest('[data-showgaps]')) {
     uiDash.open.add('fac'); state.wards.forEach((_, i) => uiDash.open.add('w' + i)); uiDash.scoresOpen = true; renderDashboard();
-    const t = $('#scores') || $('#dash'); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); return;
+    const t = $('#res-panel') || $('#scores') || $('#dash'); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); return;
   }
   if (e.target.id === 'reset-focus') { state.focus = { feature: null, phase: null }; save(); renderInterventions(); } });
 $('#interv').addEventListener('input', e => { if (e.target.dataset.plan) { state.plan[e.target.dataset.plan] = e.target.value; save(); } });
