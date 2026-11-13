@@ -44,13 +44,17 @@ button,input,select,textarea{font:inherit;color:inherit}
 .btn.danger{color:#9B2C1E}
 .top .btn{background:transparent;color:#fff;border-color:#5C7284}
 .top .btn:hover{background:#2A3E4E}
-.steps{background:var(--surface);border-bottom:1px solid var(--line);display:flex;overflow-x:auto;padding:0 .5rem;position:sticky;top:0;z-index:20}
-.steps button{background:none;border:0;border-bottom:3px solid transparent;padding:.75rem .3rem;cursor:pointer;white-space:nowrap;color:var(--muted);font-weight:550;font-size:.84rem}
+.steps{background:var(--surface);border-bottom:1px solid var(--line);display:flex;align-items:flex-start;gap:.25rem;overflow-x:auto;padding:0 .75rem;position:sticky;top:0;z-index:20}
+.steps button{background:none;border:0;border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap;color:var(--muted);font-weight:550;font-size:.95rem}
 .steps button:hover{color:var(--ink)}
 .steps button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
-.steps .tgroup{display:flex;align-items:stretch;border:1px solid var(--line);border-radius:8px;margin:.4rem .5rem .4rem 0;padding:0 .35rem;background:var(--bg)}
-.steps .tglabel{align-self:center;font-size:.74rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);padding:0 .45rem 0 .3rem}
-.steps button.major{text-transform:uppercase;letter-spacing:.06em;font-weight:700;padding:.75rem .7rem}
+.steps button.minor{padding:.9rem .6rem}
+.steps button.major{font-size:1.2rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;padding:.6rem 1.7rem .25rem;color:var(--ink)}
+.steps .navcol{display:flex;flex:0 0 14.5rem;flex-direction:column;align-items:center;padding-bottom:.35rem}
+.steps .navcol .major{width:100%}
+.steps .sublinks,.steps .subcap{font-size:.84rem;color:var(--muted);margin-top:.15rem;height:1.5rem;display:flex;align-items:center;gap:.2rem}
+.steps .sublinks button{font-size:.84rem;padding:.1rem .35rem;border-bottom:2px solid transparent;font-weight:600;color:var(--muted)}
+.steps .sublinks button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
 .steps .n{display:inline-block;min-width:1.35rem;height:1.35rem;line-height:1.35rem;padding:0 .25rem;box-sizing:border-box;text-align:center;border-radius:99px;background:var(--slate-tint);color:var(--slate);font-size:.74rem;margin-right:.3rem}
 .steps button[aria-selected="true"] .n{background:var(--ink);color:#fff}
 
@@ -189,6 +193,16 @@ textarea.paste{width:100%;min-height:6rem;border:1px solid #B8C4CD;border-radius
 .scd{padding:.2rem 1rem .9rem;border-top:1px solid var(--line)}
 details.more>summary{cursor:pointer;font-weight:600} details.more[open]>summary{margin-bottom:.5rem}
 @media(max-width:600px){.scbtn{grid-template-columns:1fr auto}.sch{grid-column:1/-1}}
+@media(max-width:760px){
+  .steps{display:grid;grid-template-columns:repeat(6,1fr);gap:0;padding:0 .5rem}
+  .steps .navcol{grid-column:span 2;flex:none;min-width:0;order:0}
+  .steps button.minor{grid-column:span 3;order:1;text-align:left}
+  .steps button.minor:last-child{order:2}
+  .steps button.major{font-size:1.05rem;padding:.6rem .2rem .25rem}
+  .steps .sublinks{flex-wrap:wrap;justify-content:center;height:auto;font-size:.78rem}
+  .steps .sublinks button{font-size:.78rem;padding:.1rem .2rem}
+  .steps .subcap{font-size:.74rem;text-align:center;height:auto}
+}
 @media print{.scbtn{grid-template-columns:1fr auto}}
 .archs{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:.7rem}
 .arch{display:grid;gap:.15rem;border:2px solid var(--line);border-radius:8px;padding:.7rem .85rem;background:#fff;cursor:pointer;position:relative}
@@ -199,7 +213,8 @@ details.more>summary{cursor:pointer;font-weight:600} details.more[open]>summary{
 .stat.hi{border-left:5px solid var(--ink)} .big.sm{font-size:1.55rem!important;line-height:1.2!important;margin-top:.25rem}
 .pickrow{display:grid;gap:.6rem;margin-top:.6rem}
 .resbox{border-radius:8px;padding:.9rem 1.1rem;margin:0 0 1.25rem;border:1px solid var(--line);background:#fff}
-.resbox h3{margin:0 0 .25rem} .resbox.gap{background:var(--amber-tint);border-color:var(--amber)} .resbox.gap h3{color:var(--amber-ink)}
+.resbox h3{margin:0 0 .25rem} .sechead{margin:1.4rem 0 .2rem;font-size:1.25rem}
+.resbox.gap{background:var(--amber-tint);border-color:var(--amber)} .resbox.gap h3{color:var(--amber-ink)}
 .resbox details{margin-top:.5rem} .resbox summary{cursor:pointer;font-weight:600}
 .acards{margin:.5rem 0 0;padding-left:1.4rem;display:grid;gap:.55rem} .acards li small{display:block;color:var(--muted)}
 details.more>summary{cursor:pointer;font-weight:600}
@@ -281,7 +296,7 @@ table.int td.x.selc{background:var(--amber-tint)}
 
 @media (min-width:700px) and (max-width:1365px){
   .steps{position:static;flex-wrap:wrap;overflow-x:visible}
-  .steps button{padding:.55rem .55rem}
+  .steps button.minor{padding:.55rem .55rem}
   .scorebar{top:.5rem}
   .res-nav{top:.75rem}
   html{scroll-padding-top:4.5rem}
@@ -356,16 +371,13 @@ h3{font-size:1.4rem}
   </div>
 </header>
 
-<nav class="steps" role="tablist" aria-label="Steps">
-  <button role="tab" data-view="about"><span class="n">i</span>About</button>
-  <div class="tgroup" role="group" aria-label="Assess"><span class="tglabel">Assess</span>
-    <button role="tab" data-view="resources"><span class="n">1</span>Resources</button>
-    <button role="tab" data-view="environment"><span class="n">2</span>Environment</button>
-    <button role="tab" data-view="dashboard"><span class="n">3</span>Dashboard</button>
-  </div>
-  <button role="tab" class="major" data-view="interventions">Act</button>
-  <button role="tab" class="major" data-view="reassess">Learn</button>
-  <button role="tab" data-view="moreinfo"><span class="n">?</span>More info</button>
+<nav class="steps" role="tablist" aria-label="Main sections">
+  <button role="tab" class="minor" data-view="about"><span class="n">i</span>About</button>
+  <div class="navcol"><button role="tab" class="major" data-view="resources" data-group="assess">Assess</button>
+    <div class="sublinks"><button role="tab" data-view="resources">Resources</button><span aria-hidden="true">&middot;</span><button role="tab" data-view="environment">Environment</button></div></div>
+  <div class="navcol"><button role="tab" class="major" data-view="interventions">Act</button><div class="subcap">Select and prioritise</div></div>
+  <div class="navcol"><button role="tab" class="major" data-view="reassess">Learn</button><div class="subcap">Meet, evaluate, reassess</div></div>
+  <button role="tab" class="minor" data-view="moreinfo"><span class="n">?</span>More info</button>
 </nav>
 
 <main>
@@ -382,11 +394,9 @@ h3{font-size:1.4rem}
   <div class="panel">
     <h3>How to use it</h3>
     <ol class="howto">
-      <li><strong>Assess resources.</strong> Assess equipment, supplies, space, and workforce at your hospital – overall and for each ward or unit caring for sick children.</li>
-      <li><strong>Assess environment.</strong> Assess whether your hospital's work environment supports staff to care for sick children effectively.</li>
-      <li><strong>Review results.</strong> Use the results to identify practical priorities for local action.</li>
-      <li><strong>Act.</strong> Identify solutions and act.</li>
-      <li><strong>Learn: reassess and continue to improve.</strong> Meet monthly, reassess every 3-6 months.</li>
+      <li><strong>ASSESS:</strong> resources and work environment. Assess equipment, supplies, space and workforce at your hospital, overall and for each ward or unit caring for sick children. Then assess whether the work environment supports staff to care for sick children effectively.</li>
+      <li><strong>ACT:</strong> select and prioritise interventions. Review the results, then use them to choose practical priorities for local action.</li>
+      <li><strong>LEARN:</strong> meet, evaluate and reassess. Meet monthly, reassess every 3-6 months.</li>
     </ol>
   </div>
 
@@ -448,7 +458,7 @@ h3{font-size:1.4rem}
       <li><strong>Keep the file with the meeting minutes</strong>, for example in a shared folder.</li>
       <li><strong>At the next meeting, select Load data file</strong> to pick up where you left off.</li>
     </ol>
-    <p class="muted">To compare rounds, load each saved file in turn and look at the dashboard. If browser data is cleared without a saved file, what you entered is lost.</p>
+    <p class="muted">To compare rounds, load each saved file in turn and look at the results on the Act page. If browser data is cleared without a saved file, what you entered is lost.</p>
   </div>
 
   <div class="panel">
@@ -465,7 +475,7 @@ h3{font-size:1.4rem}
 
   <div class="panel theory">
     <h3>The theory behind the tool</h3>
-    <p>Caring well for a severely unwell child depends on more than equipment and staff. It also depends on how people (staff, caregivers and bystanders) reason and respond to their environment and to each other. Equipment and staff matter, and Step 1 checks them. But they do not fully explain why care sometimes succeeds and sometimes breaks down.</p>
+    <p>Caring well for a severely unwell child depends on more than equipment and staff. It also depends on how people (staff, caregivers and bystanders) reason and respond to their environment and to each other. Equipment and staff matter, and the resources assessment checks them. But they do not fully explain why care sometimes succeeds and sometimes breaks down.</p>
     <p>Our research found three important factors that shaped effective emergency care: legitimacy, capability and connectedness.</p>
   </div>
 
@@ -526,7 +536,7 @@ h3{font-size:1.4rem}
 <section class="view" id="view-resources">
   <div class="viewhead">
     <div>
-      <h2>Assess, step 1: Resources</h2>
+      <h2>Assess: Resources</h2>
       <p>EECC Part 1. Start with the facility form (about 10 minutes with the facility in-charge), then add a form for each ward or unit, completed by observing items with the ward in-charge.</p>
     </div>
   </div>
@@ -540,7 +550,7 @@ h3{font-size:1.4rem}
 <section class="view" id="view-environment">
   <div class="viewhead">
     <div>
-      <h2>Assess, step 2: Environment</h2>
+      <h2>Assess: Environment</h2>
       <p>Enter one row per staff member. Type a number from 1 to 5 in each question cell and the cursor moves to the next cell. Ward, role and seniority are free text, so use whatever labels fit your facility.</p>
     </div>
   </div>
@@ -580,21 +590,16 @@ h3{font-size:1.4rem}
   </div>
 </section>
 
-<!-- DASHBOARD -->
-<section class="view" id="view-dashboard">
-  <div class="viewhead">
-    <div><h2>Assess, step 3: Dashboard</h2><p>A summary to discuss with staff. Scores are a guide for learning, not a measure of quality of care.</p></div>
-    <button class="btn no-print" type="button" data-print>Print or save as PDF</button>
-  </div>
-  <div id="dash"></div>
-</section>
-
 <!-- INTERVENTIONS -->
 <section class="view" id="view-interventions">
   <div class="viewhead">
-    <div><h2>Act</h2><p>Where to start, which interventions to consider, and what to check for how emergency care is organised in your hospital.</p></div>
+    <div><h2>Act: select and prioritise interventions</h2><p>Review the results, then choose where to start and which interventions to try.</p></div>
     <button class="btn no-print" type="button" data-print>Print or save as PDF</button>
   </div>
+  <h3 class="sechead">Your results</h3>
+  <p class="muted">A summary to discuss with staff. Scores are a guide for learning, not a measure of quality of care.</p>
+  <div id="dash"></div>
+  <h3 class="sechead" style="margin-top:2rem">Prioritise and plan</h3>
   <div id="interv"></div>
 </section>
 </main>
@@ -946,17 +951,17 @@ function setPath(obj, path, val) {
 }
 
 /* ===================== NAVIGATION ===================== */
-const VIEWS = ['about', 'resources', 'environment', 'dashboard', 'interventions', 'reassess', 'moreinfo'];
+const VIEWS = ['about', 'resources', 'environment', 'interventions', 'reassess', 'moreinfo'];
 let current = 'about';
 const RENDER = {
-  resources: () => renderResources(), environment: () => renderEnvironment(), dashboard: () => renderDashboard(),
-  interventions: () => renderInterventions()
+  resources: () => renderResources(), environment: () => renderEnvironment(),
+  interventions: () => { renderDashboard(); renderInterventions(); }
 };
 function show(view, noScroll) {
-  if (/^interp-/.test(view)) view = 'dashboard';
+  if (/^interp-/.test(view) || view === 'dashboard') view = 'interventions';
   if (!VIEWS.includes(view)) view = 'about';
   current = view;
-  $$('.steps button').forEach(b => b.setAttribute('aria-selected', b.dataset.view === view));
+  $$('.steps button').forEach(b => b.setAttribute('aria-selected', b.dataset.group === 'assess' ? (view === 'resources' || view === 'environment') : b.dataset.view === view));
   $$('.view').forEach(s => s.classList.toggle('active', s.id === 'view-' + view));
   if (RENDER[view]) RENDER[view]();
   const fi = state.facility.info;
@@ -1242,7 +1247,7 @@ $('#dl-csv').addEventListener('click', () => {
   const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = 'pecda-environment-responses.csv'; a.click(); URL.revokeObjectURL(a.href);
 });
 
-/* ===================== STEP 3: DASHBOARD ===================== */
+/* ===================== RESULTS (shown at the top of Act) ===================== */
 const MECH_COLOR = { legitimacy: 'var(--legit)', capability: 'var(--cap)', connectedness: 'var(--conn)' };
 const BAND_TEXT = { weak: 'Weakly supportive', partly: 'Partly supportive', strong: 'Strongly supportive' };
 const VAR_TEXT = { some: 'Wide spread: worth discussing', low: 'Similar experiences', between: 'Moderate spread' };
@@ -1267,7 +1272,7 @@ function mechSection(k, intro, st, extra) {
   const cls = { legitimacy: 'legit', capability: 'cap', connectedness: 'conn' }[k];
   let h = `<section class="dsec ${cls}"><h3>${MECH_NAMES[k]}</h3><p class="muted">${intro}</p>`;
   if (st.n) h += `<div class="panel">${axisHTML()}${rangeRow('Staff experience score', st.n + ' respondent' + (st.n === 1 ? '' : 's'), st.mech[k], MECH_COLOR[k])}</div>`;
-  else h += emptyBox('No staff responses yet. Enter the seven statements for each respondent to see this score.', 'environment', 'Go to step 2');
+  else h += emptyBox('No staff responses yet. Enter the seven statements for each respondent to see this score.', 'environment', 'Go to Environment');
   return h + (extra || '') + `</section>`;
 }
 function scoreButton(key, label, valueText, detailHTML) {
@@ -1285,7 +1290,7 @@ function renderDashboard() {
 
   // Capability: staff score + resource scores
   let res = `<div class="panel"><h4>Resources for emergency care</h4>`;
-  if (!hasFac && !wardsScored.some(x => x.s.answered)) res += emptyBox('No resource data yet. Enter the EECC Part 1 facility and ward forms to see scores here.', 'resources', 'Go to step 1');
+  if (!hasFac && !wardsScored.some(x => x.s.answered)) res += emptyBox('No resource data yet. Enter the EECC Part 1 facility and ward forms to see scores here.', 'resources', 'Go to Resources');
   else {
     res += `<p class="muted no-print">Select a score to see the full list of what is missing, not working or not always available.</p>`;
     res += `<div class="scs">` + scoreButton('fac', 'Facility availability', hasFac ? pct(fs.pct) : '–',
@@ -1325,7 +1330,7 @@ $('#dash').addEventListener('click', e => {
   const nb = document.querySelector(`#dash [data-gap="${k}"]`); if (nb) nb.focus({ preventScroll: true });
 });
 // Print: show every list
-window.addEventListener('beforeprint', () => { if (location.hash.replace('#', '') === 'dashboard') { state.wards.forEach((_, i) => uiDash.open.add('w' + i)); uiDash.open.add('fac'); renderDashboard(); } });
+window.addEventListener('beforeprint', () => { if (location.hash.replace('#', '') === 'interventions') { state.wards.forEach((_, i) => uiDash.open.add('w' + i)); uiDash.open.add('fac'); renderDashboard(); } });
 
 /* ---------- Missing-item lists (used by the Dashboard) ---------- */
 function gapsHTML(score, labels) {
@@ -1384,16 +1389,17 @@ function resourceGapsBox() {
   const facGaps = fs.units.filter(u => u.status === 'unmet').length;
   const wardGaps = ws.map(x => ({ x, n: x.s.units.filter(u => u.status === 'unmet').length }));
   const total = facGaps + wardGaps.reduce((a, g) => a + g.n, 0);
-  if (!fs.answered && !ws.length) return `<div class="resbox none"><h3>Resources</h3><p class="muted">No resource data entered yet. <a href="#resources">Go to Step 1</a> to check equipment, supplies, space and workforce.</p></div>`;
+  if (!fs.answered && !ws.length) return `<div class="resbox none"><h3>Resources</h3><p class="muted">No resource data entered yet. <a href="#resources">Go to Resources</a> to check equipment, supplies, space and workforce.</p></div>`;
   if (!total) return `<div class="resbox ok"><h3>Resources</h3><p>No resource gaps found in the items entered.</p></div>`;
-  let h = `<div class="resbox gap"><h3>Resources are missing</h3><p>Resolve these first, because the interventions below depend on them.</p>`;
-  if (facGaps) h += `<details open><summary>Facility: ${facGaps} item${facGaps === 1 ? '' : 's'} not available</summary>${gapsHTML(fs, FAC_LABELS)}</details>`;
-  wardGaps.filter(g => g.n).forEach(({ x, n }) => { h += `<details open><summary>${esc(wardName(x.w, x.i))}: ${n} item${n === 1 ? '' : 's'} missing, not working or not always available</summary>${gapsHTML(x.s, WARD_LABELS)}</details>`; });
-  return h + `<p class="muted no-print"><a href="#dashboard">See the scores on the Dashboard</a></p></div>`;
+  const parts = [];
+  if (facGaps) parts.push(`${facGaps} facility item${facGaps === 1 ? '' : 's'}`);
+  wardGaps.filter(g => g.n).forEach(({ x, n }) => parts.push(`${n} on ${esc(wardName(x.w, x.i))}`));
+  return `<div class="resbox gap"><h3>Resources are missing</h3><p>${parts.join('; ')}. Resolve these first, because the interventions below depend on them.</p>
+    <p class="no-print"><button class="btn" type="button" data-showgaps>Show what is missing</button></p></div>`;
 }
 function renderInterventions() {
   const st = envStats(activeResp()), sg = suggestFocus(st);
-  if (!st.n) { $('#interv').innerHTML = emptyBox('Act builds on the assessment. Enter staff responses first to see where to start.', 'environment', 'Go to step 2'); return; }
+  if (!st.n) { $('#interv').innerHTML = emptyBox('Act builds on the assessment. Enter staff responses first to see where to start.', 'environment', 'Go to Environment'); return; }
   // condition: lower median of Legitimacy and Connectedness (Capability is covered by resources)
   const two = ['legitimacy', 'connectedness'].filter(k => st.mech[k]);
   const sugCond = two.length ? two.reduce((a, k) => st.mech[k].median < st.mech[a].median ? k : a, two[0]) : 'legitimacy';
@@ -1450,7 +1456,12 @@ $('#interv').addEventListener('change', e => {
   else if (e.target.name === 'arch') state.archetype = e.target.value; else return;
   save(); renderInterventions();
 });
-$('#interv').addEventListener('click', e => { if (e.target.id === 'reset-focus') { state.focus = { feature: null, phase: null }; save(); renderInterventions(); } });
+$('#interv').addEventListener('click', e => {
+  if (e.target.closest('[data-showgaps]')) {
+    uiDash.open.add('fac'); state.wards.forEach((_, i) => uiDash.open.add('w' + i)); renderDashboard();
+    const t = $('#dash'); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); return;
+  }
+  if (e.target.id === 'reset-focus') { state.focus = { feature: null, phase: null }; save(); renderInterventions(); } });
 $('#interv').addEventListener('input', e => { if (e.target.dataset.plan) { state.plan[e.target.dataset.plan] = e.target.value; save(); } });
 
 /* ===================== STAFF SURVEY FORM (PDF built into the page) ===================== */
