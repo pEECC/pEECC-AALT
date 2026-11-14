@@ -218,6 +218,16 @@ details.more>summary{cursor:pointer;font-weight:600} details.more[open]>summary{
 .resbox details{margin-top:.5rem} .resbox summary{cursor:pointer;font-weight:600}
 .acards{margin:.5rem 0 0;padding-left:1.4rem;display:grid;gap:.55rem} .acards li small{display:block;color:var(--muted)}
 details.more>summary{cursor:pointer;font-weight:600}
+.journey{display:flex;align-items:stretch;gap:.4rem;margin:.6rem 0 1.1rem;flex-wrap:wrap}
+.jstep{all:unset;box-sizing:border-box;flex:1 1 9rem;display:flex;flex-direction:column;gap:.2rem;justify-content:center;text-align:center;border:2px solid var(--line);border-radius:10px;padding:.8rem .6rem;background:#fff;color:var(--muted);cursor:pointer}
+.jstep:hover{border-color:var(--ink)} .jstep:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.jstep .jn{font-weight:650;font-size:1rem} .jstep .jm{font-size:.85rem}
+.jstep.hl{background:var(--ink);border-color:var(--ink);color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.jstep .jt{font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#FFD38A}
+.jarrow{align-self:center;color:var(--muted);font-size:1.4rem}
+.acards .focus{display:block;margin-top:.15rem;color:var(--text,#1F2A37);font-size:.95rem} .acards .focus b{color:var(--ink)}
+.learn{margin-top:.5rem} .learn p{margin:.4rem 0}
+@media(max-width:600px){.jarrow{display:none}}
 .gap-list{margin:.25rem 0 0;padding-left:1.1rem}
 .gap-list li{margin-bottom:.25rem}
 .wardcard{border:1px solid var(--line);border-radius:8px;padding:.8rem 1rem;background:#fff;margin-bottom:.8rem}
@@ -1330,7 +1340,7 @@ $('#dash').addEventListener('click', e => {
   const nb = document.querySelector(`#dash [data-gap="${k}"]`); if (nb) nb.focus({ preventScroll: true });
 });
 // Print: show every list
-window.addEventListener('beforeprint', () => { if (location.hash.replace('#', '') === 'interventions') { state.wards.forEach((_, i) => uiDash.open.add('w' + i)); uiDash.open.add('fac'); uiDash.scoresOpen = true; uiDash.moreOpen = true; renderDashboard(); } });
+window.addEventListener('beforeprint', () => { if (location.hash.replace('#', '') === 'interventions') { state.wards.forEach((_, i) => uiDash.open.add('w' + i)); uiDash.open.add('fac'); uiDash.scoresOpen = true; uiDash.moreOpen = true; uiAct.learn = true; renderDashboard(); renderInterventions(); } });
 
 /* ---------- Missing-item lists (used by the Dashboard) ---------- */
 function gapsHTML(score, labels) {
@@ -1363,26 +1373,45 @@ const ACT_IV = [
   { n: 'Parental escalation systems', p: 'rsc', c: 'lc' },
   { n: 'Standardised handover systems', p: 'c', c: 'lc' },
   { n: 'Systems to bypass or expedite non-clinical steps', p: 'e', c: 'lc' },
-  { n: 'In-service training (including simulation)', p: 'rsc', c: 'ac' }
+  { n: 'In-service training (including simulation)', p: 'rsc', c: 'ac' },
+  { n: 'Paediatric critical illness awareness and education (posters, events)', p: 'e', c: 'lc' }
 ];
 
 const ACT_PICKS = {
-  'entry|legitimacy': [2, 3, 0, 7, 12], 'entry|connectedness': [2, 3, 0, 7, 12],
-  'recognition|legitimacy': [1, 2, 3, 5, 10], 'recognition|connectedness': [1, 2, 3, 8, 10],
-  'response|legitimacy': [1, 2, 3, 5, 6], 'response|connectedness': [1, 2, 3, 6, 8],
-  'continuity|legitimacy': [1, 2, 5, 6, 9], 'continuity|connectedness': [1, 2, 6, 8, 9]
+  'entry|legitimacy': [3, 0, 7, 12, 14], 'entry|connectedness': [3, 0, 7, 12, 14],
+  'recognition|legitimacy': [1, 4, 3, 5, 10], 'recognition|connectedness': [1, 13, 3, 8, 10],
+  'response|legitimacy': [1, 9, 3, 5, 6], 'response|connectedness': [1, 9, 3, 6, 8],
+  'continuity|legitimacy': [1, 11, 5, 6, 9], 'continuity|connectedness': [1, 11, 6, 8, 9]
+};
+// What to focus on, by intervention (index into ACT_IV) and priority condition: [Legitimacy, Connectedness]
+const ACT_FOCUS = {
+  0: ['Formalise roles and signage for the space. Give permission to stream children to it based on clinical need, bypassing payment and administration.', 'Create a shared understanding of severity, and link triage to agreed responses across departments (for example, a \u2018red\u2019 child moves to a specific location and is seen by a doctor within [xx] minutes).'],
+  1: ['Protect the space, set admission criteria, protect staffing (nursing ratios) and ensure senior supervision of the area.', 'Make children in the area visible, for example with a board showing who is admitted.'],
+  3: ['Attach triage to a single point of entry, 24 hours a day. Formalise a system for urgency that all staff accept, with a dedicated triage role to build role identity and accountability.', 'Create a shared understanding of urgency and response across cadres.'],
+  4: ['Clarify scope of practice and accepted norms: state who is allowed to perform each practice, and ensure guidelines do not duplicate or contradict each other.', 'Create shared expectations and standard ways of working, using the same guidelines across all spaces that care for children.'],
+  5: ['Make routine, documented vital signs an expected norm (link with triage). Equipment and training alone rarely achieve this, so show staff that practices like pulse oximetry simplify workflows and reduce workload in the long run.', 'Ensure results are shared and acted on across cadres and spaces.'],
+  6: ['Identify which practices cadres already perform outside their formal scope. If these arrangements are safe and appropriate for your facility, give them formal permission.', 'Embed the practice in team workflows, with a clear understanding of who is expected to act at a given time.'],
+  7: ['Identify the roles of non-clinical staff (security guards, reception staff) in streaming children, and train them to recognise features of severe illness.', 'Link to a response that ensures sick children are escorted to clinical spaces for initial clinical assessment.'],
+  8: ['Use a single document across all locations to set clear expectations for a comprehensive assessment and for sharing information.', 'Improve information sharing and continuity.'],
+  9: ['Link monitoring charts (usually colour coded) to a defined response, so staff feel permitted to escalate and medical teams feel expected to respond.', 'Agree across cadres who responds and what the response is. Ensure staff can escalate without being punished.'],
+  10: ['Encourage caregivers to speak up, through signage and informal encouragement (caregivers often know when their child is getting sicker but may feel unable to say so). Train nurses to ask caregivers about concerns during routine monitoring.', 'Bring caregivers into the emergency care system as an alert channel, so concern is communicated and mobilises action.'],
+  11: ['Make handover an expected part of care, especially when a child moves between locations or across shifts.', 'Use handover routines and documented management plans that travel with the child, to connect people across places.'],
+  12: ['Make it expected and accepted that emergency care takes precedence over administrative steps such as registration and payment.', 'Apply a shared, clear rule across the gate, OPD, pathology and radiology, so non-clinical staff also act on it.'],
+  13: ['Show leadership commitment to staff upskilling. Use short, regular, on-site training that minimises disruption to clinical work.', 'Train in groups across cadres to build shared language and team cohesion. Use simulation to improve coordination and communication.'],
+  14: ['Show leadership priority for paediatric emergency care through visible posters, events and education that make it expected to recognise and prioritise sick children.', 'Use shared messages and joint events across departments and cadres to build a common understanding of what a severely unwell child looks like.']
 };
 const ARCHETYPES = {
-  A: { name: 'OPD ‘screen and treat’', desc: 'All children, including the critically ill, are assessed and managed in the outpatient department (OPD).', pattern: 'After hours, care shifts to the inpatient ward.',
-    notes: ['Ensure the OPD is equipped for essential emergency and critical care (EECC).'] },
-  B: { name: 'OPD ‘screen and send’', desc: 'Children are assessed in the OPD, then sent to the inpatient ward for emergency treatment.', pattern: 'Delays can arise in the transition across units.',
-    notes: ['Ensure the OPD can do a full assessment, including SpO₂.', 'Ensure there is a handover between units.', 'Escort sick children between units.', 'Ensure children identified as sick can receive treatment immediately.'] },
-  C: { name: 'ED ‘receive and treat’', desc: 'A dedicated emergency department (ED) assesses and treats children; the OPD handles ambulatory care.', pattern: 'Caregivers may go to the OPD instead of the ED.',
-    notes: [] },
-  D: { name: 'IPD ‘receive and treat’', desc: 'The paediatric ward (inpatient department, IPD) does triage, assessment and emergency treatment in dedicated spaces.', pattern: 'The same staff face competing priorities.',
-    notes: [] }
+  A: { name: 'OPD \u2018screen and treat\u2019', desc: 'All children, including the critically ill, are assessed and managed in the outpatient department (OPD).',
+    learn: { intro: 'In these facilities, the outpatient department (OPD) is central to recognising and treating sick children.', opp: 'Assessment and treatment are often linked.', risks: 'Sick children can get lost among children needing ambulatory care, and OPDs can be inconsistently equipped to deliver emergency care.', todo: ['Ensure 24-hour continuity and protect staffing (for example, dedicated staff to triage and respond to severe illness).', 'Standardise a single point of entry, so children do not present variably to the OPD or the inpatient unit.'] } },
+  B: { name: 'OPD \u2018screen and send\u2019', desc: 'Children are assessed in the OPD, then sent to the inpatient ward for emergency treatment.',
+    learn: { intro: 'In these facilities, the OPD does the initial assessment and the inpatient department (IPD) provides treatment.', opp: 'Children are managed by experienced paediatric staff.', risks: 'There may be delays between assessment and treatment. Inpatient staff often have competing priorities caring for children already admitted. There may be multiple points of entry for newly arrived children (through the OPD or directly to the IPD).', todo: ['Standardise points of entry.', 'If the OPD remains the point of initial assessment, ensure a formal triage system and communicate the outcome of the first assessment to the ward.', 'Escort children who need admission.', 'Protect ward staffing for newly arrived children.'] } },
+  C: { name: 'ED \u2018receive and treat\u2019', desc: 'A dedicated emergency department (ED) assesses and treats children; the OPD handles ambulatory care.',
+    learn: { intro: 'In these facilities, an emergency department (ED) receives and treats children.', opp: 'Assessment and treatment are paired, and pathways are usually clear and consistent, including triage on arrival.', risks: 'There may be multiple points of entry (especially for neonates), or children may present to the OPD instead of the ED.', todo: ['Ensure a single point of entry for all children, including neonates, so children do not present to the OPD first.'] } },
+  D: { name: 'IPD \u2018receive and treat\u2019', desc: 'The paediatric ward (inpatient department, IPD) does triage, assessment and emergency treatment in dedicated spaces.',
+    learn: { intro: 'In these facilities, the IPD carries out both assessment and treatment.', opp: 'There is continuity from initial assessment to admission, and assessment is paired with treatment.', risks: 'Staff have competing priorities, and there may be multiple points of entry (presenting to the OPD or the adult ED first).', todo: ['Protect staff time for newly arrived children.', 'Ensure a single point of entry.'] } }
 };
-const ARCH_ALL = ['Ensure a single point of entry for all patients, in hours and after hours (including neonates presenting from the community).'];
+const ARCH_ALL_NOTE = 'For all pathways, administration and payment can delay initial assessment or treatment. Protect emergency medications and oxygen even when patients cannot pay, and expedite administrative steps.';
+const uiAct = { learn: false };
 function resourceGapsBox() {
   const fs = scoreFacility(state.facility);
   const ws = state.wards.map((w, i) => ({ w, i, s: scoreWard(w) })).filter(x => x.s.answered);
@@ -1413,7 +1442,10 @@ function renderInterventions() {
   h += `<div class="panel"><h3>1. Which archetype best describes how emergency care is organised here?</h3>
     <div class="archs" role="radiogroup" aria-label="Archetype">${Object.keys(ARCHETYPES).map(k => `<label class="arch ${arch === k ? 'on' : ''}"><input type="radio" name="arch" value="${k}" ${arch === k ? 'checked' : ''}><span class="al">${k}</span><span class="an">${esc(ARCHETYPES[k].name)}</span><span class="ad">${esc(ARCHETYPES[k].desc)}</span></label>`).join('')}</div></div>`;
   // 2. where to start
+  const jsteps = Object.keys(PHASE_NAMES).map((k, i) => `${i ? '<span class="jarrow" aria-hidden="true">&rarr;</span>' : ''}<button type="button" class="jstep ${k === phase ? 'hl' : ''}" data-phase="${k}" aria-pressed="${k === phase}"><span class="jn">${k === 'continuity' ? 'Continuity, escalation and referral' : esc(PHASE_NAMES[k])}</span><span class="jm">Median ${st.phase[k] ? fmt(st.phase[k].median) : '\u2013'}</span>${k === phase ? `<span class="jt">${phase === sg.phase ? 'Earliest breakdown' : 'Selected'}</span>` : ''}</button>`).join('');
   h += `<div class="panel"><h3>2. Where to start</h3>
+    <p class="muted">The patient journey. The earliest phase where care breaks down is highlighted. Select a step to look at a different phase.</p>
+    <div class="journey" role="group" aria-label="Patient journey">${jsteps}</div>
     <div class="cards"><div class="stat hi"><div class="lab">Earliest phase to strengthen</div><div class="big sm">${esc(PHASE_NAMES[phase])}</div><div class="sub">Median ${phaseMed}.</div></div>
     <div class="stat hi"><div class="lab">Priority condition to strengthen</div><div class="big sm">${MECH_NAMES[cond]}</div><div class="sub">Median ${fmt(st.mech[cond].median)}.</div></div></div>
     <details class="no-print"><summary>Choose a different phase or condition${overridden ? ' (changed from the suggestion)' : ''}</summary>
@@ -1426,11 +1458,16 @@ function renderInterventions() {
   const picks = (ACT_PICKS[phase + '|' + cond] || []).map(i => ACT_IV[i]);
   const PL = { e: 'Entry', r: 'Recognition', s: 'Response', c: 'Continuity' }, CL = { l: 'Legitimacy', a: 'Capability', c: 'Connectedness' };
   h += `<div class="panel"><h3>3. Interventions to consider</h3><p class="muted">For ${esc(PHASE_NAMES[phase])} and ${MECH_NAMES[cond]}. Agree a small number to try.</p>
-    <ol class="acards">${picks.map(v => `<li><strong>${esc(v.n)}</strong></li>`).join('')}</ol></div>`;
-  // 5. archetype considerations
-  h += `<div class="panel arch-notes"><h3>4. ${arch ? `Things to check for archetype ${arch}: ${esc(ARCHETYPES[arch].name)}` : 'Things to check for your archetype'}</h3>`;
-  if (!arch) h += `<p class="muted">Choose an archetype above to see considerations specific to it.</p>`;
-  h += `<ul class="notes">${(arch ? ARCHETYPES[arch].notes : []).concat(ARCH_ALL).map(n => `<li>${esc(n)}</li>`).join('')}</ul></div>`;
+    <ol class="acards">${(ACT_PICKS[phase + '|' + cond] || []).map(i => `<li><strong>${esc(ACT_IV[i].n)}</strong>${ACT_FOCUS[i] ? `<span class="focus"><b>Focus on:</b> ${esc(ACT_FOCUS[i][cond === 'connectedness' ? 1 : 0])}</span>` : ''}</li>`).join('')}</ol></div>`;
+  // 5. archetype: learn more
+  if (!arch) h += `<div class="panel arch-notes"><h3>4. About your archetype</h3><p class="muted">Choose an archetype above to learn more about its opportunities and risks.</p></div>`;
+  else {
+    const L = ARCHETYPES[arch].learn;
+    h += `<div class="panel arch-notes"><h3>4. Archetype ${arch}: ${esc(ARCHETYPES[arch].name)}</h3>
+      <p><button type="button" class="btn quiet" data-learn aria-expanded="${uiAct.learn}">${uiAct.learn ? 'Hide' : 'Learn more'}</button></p>`;
+    if (uiAct.learn) h += `<div class="learn"><p>${esc(L.intro)}</p><p><strong>Opportunities.</strong> ${esc(L.opp)}</p><p><strong>Risks.</strong> ${esc(L.risks)}</p><p><strong>What to do.</strong></p><ul class="notes">${L.todo.map(n => `<li>${esc(n)}</li>`).join('')}</ul><p class="muted">${esc(ARCH_ALL_NOTE)}</p></div>`;
+    h += `</div>`;
+  }
   // 6. action plan
   const p = state.plan;
   h += `<div class="panel"><h3>5. Action plan</h3><p class="muted">Talk through the results with staff from different roles, agree a small number of feasible actions, and reassess every 3-6 months to see what has changed.</p>
@@ -1459,6 +1496,9 @@ $('#interv').addEventListener('click', e => {
     uiDash.open.add('fac'); state.wards.forEach((_, i) => uiDash.open.add('w' + i)); uiDash.scoresOpen = true; renderDashboard();
     const t = $('#res-panel') || $('#scores') || $('#dash'); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); return;
   }
+  const ph = e.target.closest('[data-phase]');
+  if (ph) { const sg0 = suggestFocus(envStats(activeResp())); state.focus.phase = ph.dataset.phase === sg0.phase ? null : ph.dataset.phase; save(); renderInterventions(); return; }
+  if (e.target.closest('[data-learn]')) { uiAct.learn = !uiAct.learn; renderInterventions(); return; }
   if (e.target.id === 'reset-focus') { state.focus = { feature: null, phase: null }; save(); renderInterventions(); } });
 $('#interv').addEventListener('input', e => { if (e.target.dataset.plan) { state.plan[e.target.dataset.plan] = e.target.value; save(); } });
 
