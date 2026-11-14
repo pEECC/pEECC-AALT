@@ -218,16 +218,22 @@ details.more>summary{cursor:pointer;font-weight:600} details.more[open]>summary{
 .resbox details{margin-top:.5rem} .resbox summary{cursor:pointer;font-weight:600}
 .acards{margin:.5rem 0 0;padding-left:1.4rem;display:grid;gap:.55rem} .acards li small{display:block;color:var(--muted)}
 details.more>summary{cursor:pointer;font-weight:600}
-.journey{display:flex;align-items:stretch;gap:.4rem;margin:.6rem 0 1.1rem;flex-wrap:wrap}
-.jstep{all:unset;box-sizing:border-box;flex:1 1 9rem;display:flex;flex-direction:column;gap:.2rem;justify-content:center;text-align:center;border:2px solid var(--line);border-radius:10px;padding:.8rem .6rem;background:#fff;color:var(--muted);cursor:pointer}
-.jstep:hover{border-color:var(--ink)} .jstep:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
-.jstep .jn{font-weight:650;font-size:1rem} .jstep .jm{font-size:.85rem}
+.journey{display:flex;align-items:stretch;gap:.35rem;margin:.6rem 0 1.1rem;flex-wrap:wrap;padding:.8rem;border-radius:12px;background:#F3F6FA;border:1px solid var(--line)}
+.jgate,.jstep{box-sizing:border-box;flex:1 1 8rem;display:flex;flex-direction:column;align-items:center;gap:.2rem;justify-content:center;text-align:center;border-radius:12px;padding:.8rem .5rem}
+.jgate{flex:0 1 6rem;color:var(--muted);border:2px dashed var(--line);background:#fff}
+.jstep{all:unset;box-sizing:border-box;flex:1 1 8rem;display:flex;flex-direction:column;align-items:center;gap:.2rem;justify-content:center;text-align:center;border:2px solid var(--line);border-radius:12px;padding:.8rem .5rem;background:#fff;color:var(--ink);cursor:pointer}
+.jstep.later{opacity:.55}
+.jstep:hover{border-color:var(--ink);opacity:1} .jstep:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.jn{font-weight:650;font-size:.98rem} .jm{font-size:.85rem}
 .jstep.hl{background:var(--ink);border-color:var(--ink);color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.18)}
-.jstep .jt{font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#FFD38A}
-.jarrow{align-self:center;color:var(--muted);font-size:1.4rem}
+.jstep .jt{font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#FFD38A}
+.jarrow{align-self:center;color:var(--ink);font-size:1.4rem} .jarrow.fade{opacity:.35}
+.linkbtn{all:unset;color:var(--ink);text-decoration:underline;cursor:pointer;font-weight:600} .linkbtn:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.learnrow{margin:.7rem 0 0}
+.ivinfo{margin-top:.35rem} .ivinfo>summary{cursor:pointer;font-size:.92rem;color:var(--ink);font-weight:600} .ivinfo p{margin:.35rem 0;font-size:.93rem} .ivinfo ul{margin:.2rem 0 0;font-size:.93rem}
 .acards .focus{display:block;margin-top:.15rem;color:var(--text,#1F2A37);font-size:.95rem} .acards .focus b{color:var(--ink)}
 .learn{margin-top:.5rem} .learn p{margin:.4rem 0}
-@media(max-width:600px){.jarrow{display:none}}
+@media(max-width:600px){.jarrow{display:none}.jgate{flex:1 1 100%}}
 .gap-list{margin:.25rem 0 0;padding-left:1.1rem}
 .gap-list li{margin-bottom:.25rem}
 .wardcard{border:1px solid var(--line);border-radius:8px;padding:.8rem 1rem;background:#fff;margin-bottom:.8rem}
@@ -1400,6 +1406,45 @@ const ACT_FOCUS = {
   13: ['Show leadership commitment to staff upskilling. Use short, regular, on-site training that minimises disruption to clinical work.', 'Train in groups across cadres to build shared language and team cohesion. Use simulation to improve coordination and communication.'],
   14: ['Show leadership priority for paediatric emergency care through visible posters, events and education that make it expected to recognise and prioritise sick children.', 'Use shared messages and joint events across departments and cadres to build a common understanding of what a severely unwell child looks like.']
 };
+
+const ACT_INFO = {
+  1: { points: 'Medical oxygen is a useful way of designating high acuity areas (beds with functional oxygen outlets).', tools: [
+    ['PEHC-SAT: paediatric emergency care self-assessment tool for LMIC hospitals', 'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11740608/'],
+    ['National Pediatric Readiness Project assessment (high-income settings)', 'https://emscimprovement.center/domains/pediatric-readiness-project/about/what-national-pediatric-readiness-project']] },
+  3: { points: 'Legitimacy is reinforced by visible structures (signs, colour-coded spaces). Capability comes from training and clear algorithms. Connectedness depends on agreement within and across units on what each category means and how to respond.', tools: [
+    ['WHO ETAT: triage, emergency assessment and treatment of critically ill children', 'https://www.who.int/publications/i/item/9241546875'],
+    ['South African Triage Scale (SATS) training manual', 'https://medbox.org/document/the-south-african-triage-scale-sats-training-manual'],
+    ['Interagency Integrated Triage Tool (IITT)', 'https://www.who.int/tools/triage']] },
+  4: { points: 'Requires reinforcement, clinical mentorship and feedback, and must be consistent with workflows and processes. Guidelines oriented at emergency assessment and action, rather than disease-specific management, are more likely to support action before a diagnosis is established.', tools: [
+    ['WHO ETAT', 'https://www.who.int/publications/i/item/9241546875'],
+    ['WHO Pocket Book of Hospital Care for Children', 'https://www.who.int/publications/i/item/978-92-4-154837-3'],
+    ['WHO Emergency Care Toolkit', 'https://www.who.int/teams/integrated-health-services/clinical-services-and-systems/emergency-and-critical-care/emergency-care-toolkit'],
+    ['Kenya Basic Paediatric Protocols (locally adapted example)', 'https://paediatrics.uonbi.ac.ke/sites/paediatrics.uonbi.ac.ke/files/2023-04/Basic%20Paediatric%20protocol%205th%20edition%20FOR%20PRINT%2031st%20Oct%202022.pdf']] },
+  6: { points: 'Needs to align with national policies, laws and indemnity arrangements. Ideally linked with a professional structure (for example an emergency nursing certificate). Competency is difficult to maintain in facilities with high staff rotation.', tools: [] },
+  7: { points: 'Requires training and close supervision by senior clinical staff. There must be clear scopes of practice and accessible escalation pathways.', tools: [
+    ['WHO ETAT', 'https://www.who.int/publications/i/item/9241546875'],
+    ['WHO Community First Aid Response pocket guide', 'https://cdn.who.int/media/docs/default-source/integrated-health-services-%28ihs%29/csy/cfar-pocketguide.pdf']] },
+  8: { points: 'Can help prompt staff to refer to guidelines and serve as reminders of red flags and the need for escalation.', tools: [
+    ['WHO standardised clinical forms', 'https://www.who.int/tools/standardized-clinical-forms']] },
+  9: { points: 'Must be linked to action. Needs age-specific charts. Staff need to understand monitoring as regular assessment that may trigger management, not as routine recording of measurements.', tools: [
+    ['WHO clinical checklists', 'https://www.who.int/tools/clinical-checklists'],
+    ['Paediatric Early Warning Score for Resource-Limited Settings (PEWS-RL), Rwanda', 'https://www.ghspjournal.org/content/8/4/838']] },
+  10: { points: 'Caregivers can be more involved in direct clinical care (checking and reporting vital signs) or less involved (for example being asked regularly if they are concerned). Staff may over-rely on caregivers and so miss deterioration. Consider equity: language, cultural and hierarchical barriers for caregivers.', tools: [
+    ['R.E.A.C.H (Australia; high-income example)', 'https://www.cec.health.nsw.gov.au/keep-patients-safe/deteriorating-patient-program/reach'],
+    ['Ryan’s Rule (Australia; high-income example)', 'https://www.clinicalexcellence.qld.gov.au/priority-areas/safety-and-quality/ryans-rule/development-ryans-rule'],
+    ['Martha’s Rule (United Kingdom; high-income example)', 'https://www.rcpch.ac.uk/resources/marthas-rule']] },
+  12: { points: 'Visible markers (for example red armbands) reinforce legitimacy. Works only if staff agree who takes priority and how to respond. Needs management and financing rules that allow treatment before registration or payment.', tools: [] },
+  13: { points: 'May also help bring teams together and bridge boundaries between cadres if training is regular and multi-disciplinary. Needs to be regular, aligned with workload and clinical priorities, and fit local processes. Should include non-technical skills (problem solving, situational awareness). Effects may fade without supervision and equipment at the point of care.', tools: [
+    ['WHO ETAT', 'https://www.who.int/publications/i/item/9241546875'],
+    ['ETAT+ national training manual', 'https://medbox.org/document/emergency-triage-assessment-and-treatment-plus-etat-national-training-manual'],
+    ['WHO Pocket Book of Hospital Care for Children', 'https://www.who.int/publications/i/item/978-92-4-154837-3'],
+    ['WHO-ICRC Basic Emergency Care', 'https://www.who.int/publications/i/item/9789241513081']] }
+};
+function ivInfoHTML(i) {
+  const d = ACT_INFO[i]; if (!d) return '';
+  const safe = u => /^https:\/\//.test(u);
+  return `<details class="ivinfo"><summary>About this intervention</summary><p>${esc(d.points)}</p>${d.tools.length ? `<p class="ivt"><strong>Tools and resources</strong></p><ul class="notes">${d.tools.filter(t => safe(t[1])).map(t => `<li><a href="${esc(t[1])}" target="_blank" rel="noopener noreferrer">${esc(t[0])}</a></li>`).join('')}</ul>` : ''}</details>`;
+}
 const ARCHETYPES = {
   A: { name: 'OPD \u2018screen and treat\u2019', desc: 'All children, including the critically ill, are assessed and managed in the outpatient department (OPD).',
     learn: { intro: 'In these facilities, the outpatient department (OPD) is central to recognising and treating sick children.', opp: 'Assessment and treatment are often linked.', risks: 'Sick children can get lost among children needing ambulatory care, and OPDs can be inconsistently equipped to deliver emergency care.', todo: ['Ensure 24-hour continuity and protect staffing (for example, dedicated staff to triage and respond to severe illness).', 'Standardise a single point of entry, so children do not present variably to the OPD or the inpatient unit.'] } },
@@ -1440,9 +1485,17 @@ function renderInterventions() {
   let h = '';
   // 1. archetype
   h += `<div class="panel"><h3>1. Which archetype best describes how emergency care is organised here?</h3>
-    <div class="archs" role="radiogroup" aria-label="Archetype">${Object.keys(ARCHETYPES).map(k => `<label class="arch ${arch === k ? 'on' : ''}"><input type="radio" name="arch" value="${k}" ${arch === k ? 'checked' : ''}><span class="al">${k}</span><span class="an">${esc(ARCHETYPES[k].name)}</span><span class="ad">${esc(ARCHETYPES[k].desc)}</span></label>`).join('')}</div></div>`;
+    <div class="archs" role="radiogroup" aria-label="Archetype">${Object.keys(ARCHETYPES).map(k => `<label class="arch ${arch === k ? 'on' : ''}"><input type="radio" name="arch" value="${k}" ${arch === k ? 'checked' : ''}><span class="al">${k}</span><span class="an">${esc(ARCHETYPES[k].name)}</span><span class="ad">${esc(ARCHETYPES[k].desc)}</span></label>`).join('')}</div>`;
+  if (arch) {
+    const L = ARCHETYPES[arch].learn;
+    h += `<p class="learnrow"><button type="button" class="linkbtn" data-learn aria-expanded="${uiAct.learn}">${uiAct.learn ? 'Hide notes on' : 'Learn more about'} archetype ${arch}</button></p>`;
+    if (uiAct.learn) h += `<div class="learn"><p>${esc(L.intro)}</p><p><strong>Opportunities.</strong> ${esc(L.opp)}</p><p><strong>Risks.</strong> ${esc(L.risks)}</p><p><strong>What to do.</strong></p><ul class="notes">${L.todo.map(n => `<li>${esc(n)}</li>`).join('')}</ul><p class="muted">${esc(ARCH_ALL_NOTE)}</p></div>`;
+  }
+  h += `</div>`;
   // 2. where to start
-  const jsteps = Object.keys(PHASE_NAMES).map((k, i) => `${i ? '<span class="jarrow" aria-hidden="true">&rarr;</span>' : ''}<button type="button" class="jstep ${k === phase ? 'hl' : ''}" data-phase="${k}" aria-pressed="${k === phase}"><span class="jn">${k === 'continuity' ? 'Continuity, escalation and referral' : esc(PHASE_NAMES[k])}</span><span class="jm">Median ${st.phase[k] ? fmt(st.phase[k].median) : '\u2013'}</span>${k === phase ? `<span class="jt">${phase === sg.phase ? 'Earliest breakdown' : 'Selected'}</span>` : ''}</button>`).join('');
+  const JICON = {"entry": "<path d=\"M5 21V4h9v17M14 8h4l1 13M9 12.5v.5\" />", "recognition": "<circle cx=\"10.5\" cy=\"10.5\" r=\"5.5\"/><path d=\"M15 15l5 5\"/>", "response": "<path d=\"M12 4v16M4 12h16\"/>", "continuity": "<path d=\"M3 17h18M3 17v-5h11a4 4 0 014 4M3 12V8\"/><circle cx=\"7.5\" cy=\"10\" r=\"1.6\"/>"};
+  const pkeys = Object.keys(PHASE_NAMES), hlIdx = pkeys.indexOf(phase);
+  const jsteps = `<div class="jgate" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9M21 21V9M3 9l9-5 9 5M7 21v-8M17 21v-8M12 21v-8M3 21h18"/></svg><span class="jn">Arrival</span><span class="jm">at the gate</span></div>` + pkeys.map((k, i) => `<span class="jarrow ${i <= hlIdx ? '' : 'fade'}" aria-hidden="true">&rarr;</span><button type="button" class="jstep ${k === phase ? 'hl' : (i > hlIdx ? 'later' : '')}" data-phase="${k}" aria-pressed="${k === phase}"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${JICON[k]}</svg><span class="jn">${k === 'continuity' ? 'Continuity, escalation and referral' : esc(PHASE_NAMES[k])}</span><span class="jm">Median ${st.phase[k] ? fmt(st.phase[k].median) : '–'}</span>${k === phase ? `<span class="jt">${phase === sg.phase ? 'Earliest breakdown' : 'Selected'}</span>` : ''}</button>`).join('');
   h += `<div class="panel"><h3>2. Where to start</h3>
     <p class="muted">The patient journey. The earliest phase where care breaks down is highlighted. Select a step to look at a different phase.</p>
     <div class="journey" role="group" aria-label="Patient journey">${jsteps}</div>
@@ -1458,19 +1511,10 @@ function renderInterventions() {
   const picks = (ACT_PICKS[phase + '|' + cond] || []).map(i => ACT_IV[i]);
   const PL = { e: 'Entry', r: 'Recognition', s: 'Response', c: 'Continuity' }, CL = { l: 'Legitimacy', a: 'Capability', c: 'Connectedness' };
   h += `<div class="panel"><h3>3. Interventions to consider</h3><p class="muted">For ${esc(PHASE_NAMES[phase])} and ${MECH_NAMES[cond]}. Agree a small number to try.</p>
-    <ol class="acards">${(ACT_PICKS[phase + '|' + cond] || []).map(i => `<li><strong>${esc(ACT_IV[i].n)}</strong>${ACT_FOCUS[i] ? `<span class="focus"><b>Focus on:</b> ${esc(ACT_FOCUS[i][cond === 'connectedness' ? 1 : 0])}</span>` : ''}</li>`).join('')}</ol></div>`;
-  // 5. archetype: learn more
-  if (!arch) h += `<div class="panel arch-notes"><h3>4. About your archetype</h3><p class="muted">Choose an archetype above to learn more about its opportunities and risks.</p></div>`;
-  else {
-    const L = ARCHETYPES[arch].learn;
-    h += `<div class="panel arch-notes"><h3>4. Archetype ${arch}: ${esc(ARCHETYPES[arch].name)}</h3>
-      <p><button type="button" class="btn quiet" data-learn aria-expanded="${uiAct.learn}">${uiAct.learn ? 'Hide' : 'Learn more'}</button></p>`;
-    if (uiAct.learn) h += `<div class="learn"><p>${esc(L.intro)}</p><p><strong>Opportunities.</strong> ${esc(L.opp)}</p><p><strong>Risks.</strong> ${esc(L.risks)}</p><p><strong>What to do.</strong></p><ul class="notes">${L.todo.map(n => `<li>${esc(n)}</li>`).join('')}</ul><p class="muted">${esc(ARCH_ALL_NOTE)}</p></div>`;
-    h += `</div>`;
-  }
+    <ol class="acards">${(ACT_PICKS[phase + '|' + cond] || []).map(i => `<li><strong>${esc(ACT_IV[i].n)}</strong>${ACT_FOCUS[i] ? `<span class="focus"><b>Focus on:</b> ${esc(ACT_FOCUS[i][cond === 'connectedness' ? 1 : 0])}</span>` : ''}${ivInfoHTML(i)}</li>`).join('')}</ol></div>`;
   // 6. action plan
   const p = state.plan;
-  h += `<div class="panel"><h3>5. Action plan</h3><p class="muted">Talk through the results with staff from different roles, agree a small number of feasible actions, and reassess every 3-6 months to see what has changed.</p>
+  h += `<div class="panel"><h3>4. Action plan</h3><p class="muted">Talk through the results with staff from different roles, agree a small number of feasible actions, and reassess every 3-6 months to see what has changed.</p>
     <p class="muted no-print">The action plan is saved in this browser. To update it at later meetings and keep a record of each one, see <a href="#reassess">Learn</a>.</p>
     <div class="plan">${[['chosen', 'Interventions we will try'], ['lead', 'Who leads, and who else is involved'], ['change', 'What we expect to change'], ['recheck', 'When we will re-check, and how']].map(([k, l]) => `<div class="field"><label for="pl-${k}">${l}</label><textarea id="pl-${k}" data-plan="${k}">${esc(p[k] || '')}</textarea></div>`).join('')}</div></div>`;
   // 7. full list
