@@ -444,6 +444,13 @@ h3{font-size:1.4rem}
   </div>
 
   <div class="panel">
+    <h3>Learn from deaths and difficult cases</h3>
+    <p>Multi-disciplinary clinical meetings such as morbidity and mortality meetings can support learning across the entire department. They must be run inclusively, reducing hierarchies and creating psychological safety. Keep them short, so they do not disrupt clinical work.</p>
+    <h4>Resources</h4>
+    <ul class="notes"><li><a href="https://www.who.int/publications/i/item/9789241515184" target="_blank" rel="noopener noreferrer">WHO: Improving the quality of paediatric care. An operational guide for facility-based audit and review of paediatric mortality</a></li></ul>
+  </div>
+
+  <div class="panel">
     <h3>Document progress</h3>
     <p>Keep a record of each meeting and of how things are changing. Meeting minutes, together with routinely collected data, are enough.</p>
     <h4>Examples of indicators to track</h4>
@@ -609,10 +616,10 @@ h3{font-size:1.4rem}
 <!-- INTERVENTIONS -->
 <section class="view" id="view-interventions">
   <div class="viewhead">
-    <div><h2>Act: select and prioritise interventions</h2><p>Review the results, then choose where to start and which interventions to try.</p></div>
+    <div><h2>Act: select and prioritise interventions</h2></div>
     <button class="btn no-print" type="button" data-print>Print or save as PDF</button>
   </div>
-  <h3 class="sechead">Prioritise and plan</h3>
+  <h3 class="sechead">Understand your facility’s organisation</h3>
   <div id="interv"></div>
   <h3 class="sechead" style="margin-top:2rem">Your results</h3>
   <div id="dash"></div>
@@ -1414,7 +1421,8 @@ const ACT_INFO = {
   3: { points: 'Legitimacy is reinforced by visible structures (signs, colour-coded spaces). Capability comes from training and clear algorithms. Connectedness depends on agreement within and across units on what each category means and how to respond.', tools: [
     ['WHO ETAT: triage, emergency assessment and treatment of critically ill children', 'https://www.who.int/publications/i/item/9241546875'],
     ['South African Triage Scale (SATS) training manual', 'https://medbox.org/document/the-south-african-triage-scale-sats-training-manual'],
-    ['Interagency Integrated Triage Tool (IITT)', 'https://www.who.int/tools/triage']] },
+    ['Interagency Integrated Triage Tool (IITT)', 'https://www.who.int/tools/triage'],
+    ['EECC colour-code chart to help staff identify children with severe or critical illness (VSDT protocol, children)', 'https://static1.squarespace.com/static/66f1a590f47578524fdef32d/t/68481a4cb6a0596dc906de01/1749555788589/EECC+VSDT+Protocol+Children.pdf']] },
   4: { points: 'Requires reinforcement, clinical mentorship and feedback, and must be consistent with workflows and processes. Guidelines oriented at emergency assessment and action, rather than disease-specific management, are more likely to support action before a diagnosis is established.', tools: [
     ['WHO ETAT', 'https://www.who.int/publications/i/item/9241546875'],
     ['WHO Pocket Book of Hospital Care for Children', 'https://www.who.int/publications/i/item/978-92-4-154837-3'],
@@ -1497,7 +1505,7 @@ function renderInterventions() {
   const pkeys = Object.keys(PHASE_NAMES), hlIdx = pkeys.indexOf(phase);
   const jsteps = `<div class="jgate" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9M21 21V9M3 9l9-5 9 5M7 21v-8M17 21v-8M12 21v-8M3 21h18"/></svg><span class="jn">Arrival</span><span class="jm">at the gate</span></div>` + pkeys.map((k, i) => `<span class="jarrow ${i <= hlIdx ? '' : 'fade'}" aria-hidden="true">&rarr;</span><button type="button" class="jstep ${k === phase ? 'hl' : (i > hlIdx ? 'later' : '')}" data-phase="${k}" aria-pressed="${k === phase}"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${JICON[k]}</svg><span class="jn">${k === 'continuity' ? 'Continuity, escalation and referral' : esc(PHASE_NAMES[k])}</span><span class="jm">Median ${st.phase[k] ? fmt(st.phase[k].median) : '–'}</span>${k === phase ? `<span class="jt">${phase === sg.phase ? 'Earliest breakdown' : 'Selected'}</span>` : ''}</button>`).join('');
   h += `<div class="panel"><h3>2. Where to start</h3>
-    <p class="muted">The patient journey. The earliest phase where care breaks down is highlighted. Select a step to look at a different phase.</p>
+    <p class="muted">The patient journey. The earliest phase where care breaks down is highlighted: the earliest phase with a median score within half a point of the lowest. Select a step to look at a different phase.</p>
     <div class="journey" role="group" aria-label="Patient journey">${jsteps}</div>
     <div class="cards"><div class="stat hi"><div class="lab">Earliest phase to strengthen</div><div class="big sm">${esc(PHASE_NAMES[phase])}</div><div class="sub">Median ${phaseMed}.</div></div>
     <div class="stat hi"><div class="lab">Priority condition to strengthen</div><div class="big sm">${MECH_NAMES[cond]}</div><div class="sub">Median ${fmt(st.mech[cond].median)}.</div></div></div>
@@ -1522,10 +1530,10 @@ function renderInterventions() {
   const X = (on, sel) => `<td class="x ${sel ? 'selc' : ''}">${on ? '<span aria-label="yes">✓</span>' : '<span class="muted" aria-label="no"></span>'}</td>`;
   const ph = Object.keys(PHASES);
   const body = INTERVENTION_GROUPS.map((gname, gi) => {
-    const list = scored.filter(r => r.iv.group === gi).sort((x, y) => y.m - x.m || x.idx - y.idx);
-    return `<tr class="grp"><td colspan="8">${esc(gname)}</td></tr>` + list.map(r => `<tr><td><strong>${esc(r.iv.name)}</strong></td>${ph.map(k => X(r.iv.phases.includes(k), k === phase)).join('')}${Object.keys(MECH).map(k => X(r.iv.feats.includes(k), k === cond)).join('')}</tr>`).join('');
+    const list = scored.filter(r => r.iv.group === gi).sort((x, y) => x.idx - y.idx);
+    return `<tr class="grp"><td colspan="8">${esc(gname)}</td></tr>` + list.map(r => `<tr><td><strong>${esc(r.iv.name)}</strong></td>${ph.map(k => X(r.iv.phases.includes(k), false)).join('')}${Object.keys(MECH).map(k => X(r.iv.feats.includes(k), false)).join('')}</tr>`).join('');
   }).join('');
-  h += `<details class="panel more"><summary>See the full list of interventions</summary><div class="table-scroll"><table class="data int"><thead><tr><th>Intervention</th>${ph.map(k => `<th class="${k === phase ? 'sel' : ''}">${esc(k === 'continuity' ? 'Continuity, escalation, referral' : PHASE_NAMES[k])}</th>`).join('')}${Object.keys(MECH).map(k => `<th class="${k === cond ? 'sel' : ''}">${MECH_NAMES[k]}</th>`).join('')}</tr></thead><tbody>${body}</tbody></table></div>
+  h += `<details class="panel more"><summary>See the full list of interventions</summary><div class="table-scroll"><table class="data int"><thead><tr><th>Intervention</th>${ph.map(k => `<th>${esc(k === 'continuity' ? 'Continuity, escalation, referral' : PHASE_NAMES[k])}</th>`).join('')}${Object.keys(MECH).map(k => `<th>${MECH_NAMES[k]}</th>`).join('')}</tr></thead><tbody>${body}</tbody></table></div>
   <p class="legend" style="margin-top:.6rem">Interventions that match the chosen condition and phase are listed first within each group. Ticks show the potential functions of each intervention. They are a guide, not a definitive map. In practice, functions depend on how the intervention is designed and implemented in your context.</p></details>`;
   $('#interv').innerHTML = h;
 }
